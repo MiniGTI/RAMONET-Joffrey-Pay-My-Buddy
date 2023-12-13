@@ -1,0 +1,10 @@
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/service/TransactionService.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/model/User.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/repository/BankAccountRepository.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/repository/UserRepository.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/model/Transaction.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/model/BankAccount.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/RamonetJoffreyPayMyBuddyApplication.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/service/UserService.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/service/BankAccountService.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/repository/TransactionRepository.java
