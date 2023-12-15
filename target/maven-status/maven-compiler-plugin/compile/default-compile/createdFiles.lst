@@ -1,10 +1,10 @@
 com/paymybuddy/repository/TransactionRepository.class
-com/paymybuddy/service/BankAccountService.class
 com/paymybuddy/RamonetJoffreyPayMyBuddyApplication.class
 com/paymybuddy/service/UserService.class
 com/paymybuddy/model/User.class
 com/paymybuddy/repository/UserRepository.class
 com/paymybuddy/model/BankAccount.class
-com/paymybuddy/service/TransactionService.class
 com/paymybuddy/repository/BankAccountRepository.class
+com/paymybuddy/service/BankAccountService.class
+com/paymybuddy/service/TransactionService.class
 com/paymybuddy/model/Transaction.class

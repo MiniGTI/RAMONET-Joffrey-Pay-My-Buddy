@@ -1,0 +1,106 @@
+body {
+    margin: 0px
+}
+
+.container-fluid .header{
+    padding: 2px;
+}
+
+h2 {
+    background-image: linear-gradient(to left, #9ab82e, #2eb82e);
+    font-size: 1.3em;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px 30px;
+}
+
+.header nav {
+    padding-top: 10px;
+}
+
+.nav a {
+    text-decoration: none;
+    color: black;
+}
+
+.nav li {
+    padding-top: 5px;
+    padding-left: 20px;
+    color: #046ad7;
+}
+
+.nav-breadcrumb{
+    display: flex;
+    justify-content: left;
+    align-content: center;
+    background-color: #f3f3f3;
+    height: 3em;
+    margin-bottom: 2em;
+}
+.breadcrumb{
+    margin-left: 30px;
+    width: 9em;
+    justify-content: space-around;
+}
+
+.breadcrumb a{
+    text-decoration: none;
+    color: #357ab7;
+}
+
+.breadcrumb li{
+    color: #a4a4a4;
+}
+
+.btn-lg{
+    font-size: 1.6em;
+}
+
+.form-head a{
+    padding: 10px 40px;
+}
+
+.form-inline{
+    height: 10em;
+    background-color: #f3f3f3 ;
+    margin:auto;
+}
+
+.form-control, .form-select{
+    background-color: white;
+    border: solid 2px black;
+    border-radius: 0px;
+    color: black;
+    }
+
+.form-inline .btn-lg{
+    background-color: #5bb75b;
+    width: 6.5em;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    text-align: center;
+    padding: 3px 30px;
+}
+
+.transaction{
+    padding-top: 2em;
+}
+
+.table{
+    border: solid 2px black;
+}
+
+.table thead tr th{
+    background-color: #5bb75b;
+    color: white;
+}
+
+.table tbody tr th, td{
+    border: none;
+}
+
+.table tbody .first, .last{
+    background-color: #f1f1f1;
+}

@@ -2,85 +2,73 @@ package com.paymybuddy.repository;
 
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.util.Optional;
 
-/**
- * Test class for the UserRepository.
- */
-@SpringBootTest
-@ActiveProfiles("test")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserRepositoryTest {
-    /**
-     * UserRepository call.
-     */
+    
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TestEntityManager entityManager;
     
-    /**
-     * A simple User object initialization for test.
-     */
     private final User USER = new User("savetest@gmail.com", "passTest", "first", "last", new BankAccount());
     
-    /**
-     * Test of the save() method of UserRepository.
-     */
     @Test
-    @Order(1)
-    void saveUserRepositoryTest() {
-        User userSaved = userRepository.save(USER);
-        
-        Assertions.assertEquals(USER, userSaved);
+    void userSaveTest() {
+        User savedUser = userRepository.save(USER);
+        Assertions.assertEquals(savedUser, entityManager.find(User.class, savedUser.getId()));
     }
     
-    /**
-     * Test of the findBy() method of UserRepository.
-     */
     @Test
-    @Order(2)
-    void findByIdUserRepositoryTest() {
-        Optional<User> userFound = userRepository.findById(1);
+    void userUpdateTest() {
+        entityManager.persist(USER);
+        String newPassword = "newPassTest";
+        USER.setPassword(newPassword);
         
-        Assertions.assertEquals("test@gmail.com", userFound.get()
-                .getEmail());
+        userRepository.save(USER);
+        
+        Assertions.assertEquals(newPassword, entityManager.find(User.class, USER.getId())
+                .getPassword());
     }
     
-    /**
-     * Test of the findAll() method of UserRepository.
-     */
     @Test
-    @Order(3)
-    void findAllUserRepositoryTest() {
-        Iterable<User> users = userRepository.findAll();
+    void userFindByIdTest() {
+        entityManager.persist(USER);
         
-        int counter = 0;
-        for(User u : users) {
-            counter++;
-        }
+        Optional<User> findUser = userRepository.findById(USER.getId());
         
-        Assertions.assertEquals(3, counter);
+        Assertions.assertEquals(USER.getId(), findUser.get()
+                .getId());
     }
     
-    /**
-     * Test of the delete() method of UserRepository.
-     */
     @Test
-    @Order(4)
-    void deleteByEmailUserRepositoryTest() {
-        userRepository.deleteById(3);
+    void userFindAllTest() {
+        User user2 = new User("savetest2@gmail.com", "passTest", "first", "last", new BankAccount());
+        entityManager.persist(USER);
+        entityManager.persist(user2);
         
-        Iterable<User> users = userRepository.findAll();
+        Iterable<User> findUsers = userRepository.findAll();
         
-        int counter = 0;
-        for(User u : users) {
-            counter++;
-        }
+        assertThat(findUsers).contains(USER, user2);
+    }
+    
+    @Test
+    void userDeleteByIdTest() {
+        entityManager.persist(USER);
         
-        Assertions.assertEquals(2, counter);
+        userRepository.deleteById(USER.getId());
+        
+        Assertions.assertNull(entityManager.find(User.class, USER.getId()));
     }
 }
