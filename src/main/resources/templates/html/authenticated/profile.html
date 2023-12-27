@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>Profile</title>
 
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../../../static/css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../../static/css/profile.css" type="text/css" th:href="@{/css/profile.css}">
 </head>
 <body>
 
@@ -16,11 +16,16 @@
             <h2 class="col-sm-3 col-md-2 col-lg-2">Pay My Buddy</h2>
             <nav class="col-sm-8 offset-sm-2 col-md-6 offset-md-4 col-lg-3 offset-lg-7 ">
                 <ul class="nav">
-                    <li role="presentation"><a href="home.html">Home</a></li>
-                    <li role="presentation"><a href="transfer.html">Transfer</a></li>
+                    <li role="presentation"><a href="home">Home</a></li>
+                    <li role="presentation"><a href="transfer">Transfer</a></li>
                     <li role="presentation">Profile</li>
-                    <li role="presentation"><a href="contact.html">Contact</a></li>
-                    <li role="presentation"><a href="logOff.html">Log off</a></li>
+                    <li role="presentation"><a href="contact">Contact</a></li>
+                    <form th:action="@{/logout}" method="post">
+                        <li role="presentation">
+                            <input type="hidden" name="_csrf" value="07b8ec05-fe21-4819-80b1-2ad57ae9450e">
+                            <input type="submit" th:href="@{/logout}" value="Log off"></li>
+                    </form>
+                </ul>
                 </ul>
             </nav>
         </div>
@@ -74,15 +79,15 @@
                     <div class="col-md-6">
                         <label class="form-label">First Name *</label>
                         <input type="text" class="form-control" aria-label="First name"
-                               value="#QUERY USER FIRSTNAME">
+                               value="#QUERY USER FIRSTNAME"/>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Last Name *</label>
-                        <input type="text" class="form-control" aria-label="Last name" value="#QUERY USER LASTNAME">
+                        <input type="text" class="form-control" aria-label="Last name" value="#QUERY USER LASTNAME"/>
                     </div>
                     <div class="col-md-6">
                         <label for="inputEmail4" class="form-label">Email *</label>
-                        <input type="email" class="form-control" id="inputEmail4" value="#QUERY USER EMAIL">
+                        <input type="email" class="form-control" id="inputEmail4" value="#QUERY USER EMAIL"/>
                     </div>
                 </div>
             </div>
@@ -100,15 +105,15 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1" class="form-label">Old password *</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1">
+                        <input type="password" class="form-control" id="exampleInputPassword1" required/>
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputPassword2" class="form-label">New password *</label>
-                        <input type="password" class="form-control" id="exampleInputPassword2">
+                        <input type="password" class="form-control" id="exampleInputPassword2" required/>
                     </div>
                     <div class="col-md-12">
                         <label for="exampleInputPassword3" class="form-label">Confirm Password *</label>
-                        <input type="password" class="form-control" id="exampleInputPassword3">
+                        <input type="password" class="form-control" id="exampleInputPassword3" required/>
                     </div>
                 </div>
             </div>
@@ -141,6 +146,9 @@
             </table>
         </div>
     </div>
+</div>
+<div class="row delete col-md-2 offset-md-5 mb-3">
+    <a class=" btn btn-danger" href="delete.html" role="button">Delete Account</a>
 </div>
 </body>
 </html>

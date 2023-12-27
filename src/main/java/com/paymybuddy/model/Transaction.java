@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Transaction model.
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -26,8 +29,7 @@ public class Transaction {
     private LocalDateTime createdAt;
     @OneToOne(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-           )
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;
     

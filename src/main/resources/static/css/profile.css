@@ -24,10 +24,16 @@ h2 {
     color: black;
 }
 
-.nav li {
+.nav li, .nav form li{
     padding-top: 5px;
     padding-left: 20px;
     color: #046ad7;
+}
+
+.nav form li input{
+    padding: 0px 0px;
+    border: none;
+    background: none;
 }
 
 .nav-breadcrumb{
@@ -44,6 +50,11 @@ h2 {
     justify-content: space-around;
 }
 
+.breadcrumb a{
+    text-decoration: none;
+    color: #357ab7;
+}
+
 .breadcrumb li{
     color: #a4a4a4;
 }
@@ -58,7 +69,24 @@ h2 {
     border: none;
 }
 
+.form-head{
+    margin-bottom: 3em;
+}
+.form-head h3{
+    padding-left: initial;
+}
+
+.form-head .button{
+    padding: 0px;
+}
+
 .btn-lg{
     font-size: 1.6em;
     padding: 10px 40px;
+}
+
+.form-profile, .form-password {
+    height: 15em;
+    background-color: #f3f3f3 ;
+    margin:auto;
 }

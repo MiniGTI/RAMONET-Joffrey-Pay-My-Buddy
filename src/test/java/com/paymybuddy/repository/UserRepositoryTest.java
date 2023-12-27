@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +23,7 @@ public class UserRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     
-    private final User USER = new User("savetest@gmail.com", "passTest", "first", "last", new BankAccount());
+    private final User USER = new User("savetest@gmail.com", "passTest", "first", "last", "USER", new BankAccount());
     
     @Test
     void userSaveTest() {
@@ -53,8 +54,17 @@ public class UserRepositoryTest {
     }
     
     @Test
+    void userFindByEmailTest(){
+        entityManager.persist(USER);
+        
+        Optional<User> findUser = userRepository.findByEmail(USER.getEmail());
+        
+        Assertions.assertEquals(USER.getId(), findUser.get().getId());
+    }
+    
+    @Test
     void userFindAllTest() {
-        User user2 = new User("savetest2@gmail.com", "passTest", "first", "last", new BankAccount());
+        User user2 = new User("savetest2@gmail.com", "passTest", "first", "last", "USER", new BankAccount());
         entityManager.persist(USER);
         entityManager.persist(user2);
         

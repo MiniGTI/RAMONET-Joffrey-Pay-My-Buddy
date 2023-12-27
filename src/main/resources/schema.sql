@@ -28,9 +28,11 @@ CREATE TABLE user
     firstname       VARCHAR(255) NOT NULL,
     lastname        VARCHAR(255) NOT NULL,
     password        VARCHAR(255) NOT NULL,
+    role            VARCHAR(10)  NOT NULL DEFAULT "USER",
     bank_account_id INTEGER UNIQUE,
     PRIMARY KEY (id),
     FOREIGN KEY (bank_account_id) REFERENCES bank_account (id),
     FOREIGN KEY (user_id) REFERENCES user (id)
 ) ENGINE = InnoDB;
+
 
