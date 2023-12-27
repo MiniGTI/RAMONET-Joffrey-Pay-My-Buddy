@@ -24,10 +24,16 @@ h2 {
     color: black;
 }
 
-.nav li {
+.nav li, .nav form li{
     padding-top: 5px;
     padding-left: 20px;
     color: #046ad7;
+}
+
+.nav form li input{
+    padding: 0px 0px;
+    border: none;
+    background: none;
 }
 
 .nav-breadcrumb{

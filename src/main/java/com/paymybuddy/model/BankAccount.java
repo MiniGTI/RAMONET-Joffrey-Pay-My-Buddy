@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * BankAccount model.
+ */
 @Entity
 @Data
 @Table(name = "bank_account")
@@ -19,15 +22,17 @@ public class BankAccount {
     private String iban;
     private String swift;
     
-    @OneToMany (
+    @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_account_id")
     private List<Transaction> transactions;
+    
     public BankAccount() {
         this.balance = new BigDecimal("0.00");
-        this.iban = UUID.randomUUID().toString();
-        this.swift = UUID.randomUUID().toString();
+        this.iban = UUID.randomUUID()
+                .toString();
+        this.swift = UUID.randomUUID()
+                .toString();
     }
 }

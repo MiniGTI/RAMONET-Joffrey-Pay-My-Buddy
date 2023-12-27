@@ -1,7 +1,10 @@
-com/paymybuddy/serviceTest/UserServiceTest.class
-com/paymybuddy/serviceTest/BankAccountServiceTest.class
-com/paymybuddy/repository/TransactionsRepositoryTest.class
+com/paymybuddy/controller/LoginControllerTest.class
+com/paymybuddy/Service/BankAccountServiceTest.class
+com/paymybuddy/repository/TransactionRepositoryTest.class
+com/paymybuddy/controller/RegisterControllerTest.class
+com/paymybuddy/dto/UserDtoServiceTest.class
+com/paymybuddy/Service/TransactionServiceTest.class
 com/paymybuddy/repository/UserRepositoryTest.class
 com/paymybuddy/repository/BankAccountRepositoryTest.class
 com/paymybuddy/RamonetJoffreyPayMyBuddyApplicationTests.class
-com/paymybuddy/serviceTest/TransactionServiceTest.class
+com/paymybuddy/Service/UserServiceTest.class
