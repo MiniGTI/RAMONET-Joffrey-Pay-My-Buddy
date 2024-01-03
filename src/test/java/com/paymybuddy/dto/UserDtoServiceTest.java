@@ -1,5 +1,6 @@
 package com.paymybuddy.dto;
 
+import com.paymybuddy.dtoService.UserDtoService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,28 +17,28 @@ public class UserDtoServiceTest {
     private final String wrongInput = "wrongtest";
     
     @Test
-    public void passwordCheckShouldReturnTrueIfInputsAreEqualsTest(){
+    public void passwordCheckShouldReturnTrueIfInputsAreEqualsTest() {
         Boolean result = userDtoService.passwordCheck(password, password);
         
         Assertions.assertTrue(result);
     }
     
     @Test
-    public void passwordCheckShouldReturnFalseIfInputsAreEqualsTest(){
+    public void passwordCheckShouldReturnFalseIfInputsAreEqualsTest() {
         Boolean result = userDtoService.passwordCheck(password, wrongInput);
         
         Assertions.assertFalse(result);
     }
     
     @Test
-    public void emailCheckShouldReturnTrueIfInputsAreEqualsTest(){
+    public void emailCheckShouldReturnTrueIfInputsAreEqualsTest() {
         Boolean result = userDtoService.emailCheck(email, email);
         
         Assertions.assertTrue(result);
     }
     
     @Test
-    public void emailCheckShouldReturnFalseIfInputsAreEqualsTest(){
+    public void emailCheckShouldReturnFalseIfInputsAreEqualsTest() {
         Boolean result = userDtoService.emailCheck(email, wrongInput);
         
         Assertions.assertFalse(result);

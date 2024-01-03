@@ -1,6 +1,7 @@
 package com.paymybuddy.repository;
 
 import com.paymybuddy.model.BankAccount;
+import com.paymybuddy.model.BuddyRelation;
 import com.paymybuddy.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,12 +54,13 @@ public class UserRepositoryTest {
     }
     
     @Test
-    void userFindByEmailTest(){
+    void userFindByEmailTest() {
         entityManager.persist(USER);
         
         Optional<User> findUser = userRepository.findByEmail(USER.getEmail());
         
-        Assertions.assertEquals(USER.getId(), findUser.get().getId());
+        Assertions.assertEquals(USER.getId(), findUser.get()
+                .getId());
     }
     
     @Test
@@ -80,5 +81,15 @@ public class UserRepositoryTest {
         userRepository.deleteById(USER.getId());
         
         Assertions.assertNull(entityManager.find(User.class, USER.getId()));
+    }
+    
+    @Test
+    void userGetAllBuddyIdTest() {
+        BuddyRelation buddyRelation = new BuddyRelation(1, 2);
+        entityManager.persist(buddyRelation);
+        
+        Iterable<Integer> result = userRepository.getAllBuddyId(1);
+        
+        assertThat(result).contains(buddyRelation.getBuddy_id());
     }
 }

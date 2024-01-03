@@ -1,7 +1,6 @@
 package com.paymybuddy.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -35,6 +34,17 @@ public class User {
     
     public User(String email, String password, String firstname, String lastname, String role,
                 BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+        this.email = email;
+        this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.role = role;
+    }
+    
+    public User(Integer id, String email, String password, String firstname, String lastname, String role,
+                BankAccount bankAccount) {
+        this.id = id;
         this.bankAccount = bankAccount;
         this.email = email;
         this.password = password;
