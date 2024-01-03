@@ -35,4 +35,13 @@ CREATE TABLE user
     FOREIGN KEY (user_id) REFERENCES user (id)
 ) ENGINE = InnoDB;
 
+CREATE TABLE user_buddy
+(
+    id       INTEGER NOT NULL AUTO_INCREMENT,
+    user_id  INTEGER,
+    buddy_id INTEGER,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES user (id),
+    FOREIGN KEY (buddy_id) REFERENCES user (id)
+)   ENGINE = InnoDB;
 

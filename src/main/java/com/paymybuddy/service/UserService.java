@@ -4,9 +4,12 @@ import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Optional;
 
 /**
@@ -15,6 +18,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     
+    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
     /**
      * Call BCryptPasswordEncoder.class to encode password.
      */
@@ -94,5 +98,36 @@ public class UserService {
         user.setBankAccount(new BankAccount());
         
         return userRepository.save(user);
+    }
+    
+    
+    /**
+     * Method to get the Id of the principal
+     *
+     * @param principal User authenticated.
+     * @return An Integer, the id of the principal.
+     */
+    public Integer getPrincipalId(Principal principal) {
+        Integer userId = null;
+        Optional<User> optUser = userRepository.findByEmail(principal.getName());
+        
+        if(optUser.isPresent()) {
+            userId = optUser.get()
+                    .getId();
+        } else {
+            logger.error("No principal find.");
+        }
+        
+        return userId;
+    }
+    
+    /**
+     * Method to get a buddy's id into a list of user's buddys.
+     *
+     * @param userId id of the user.
+     * @return a list of Integer.
+     */
+    public Iterable<Integer> getAllBuddyId(Integer userId) {
+        return userRepository.getAllBuddyId(userId);
     }
 }

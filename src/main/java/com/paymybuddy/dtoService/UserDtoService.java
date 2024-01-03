@@ -1,4 +1,4 @@
-package com.paymybuddy.dto;
+package com.paymybuddy.dtoService;
 
 import org.springframework.stereotype.Service;
 
@@ -10,21 +10,23 @@ public class UserDtoService {
     
     /**
      * Methode to check if the confirmation input of password in the register form is equal to the first password input.
-     * @param password first password input in the register form. Attribute of a UserDto object.
+     *
+     * @param password      first password input in the register form. Attribute of a UserDto object.
      * @param passwordCheck second password input in the register form. Attribute of a UserDto object.
      * @return a Boolean.
      */
-    public Boolean passwordCheck(String password, String passwordCheck){
+    public Boolean passwordCheck(String password, String passwordCheck) {
         return password.equals(passwordCheck);
     }
     
     /**
      * Methode to check if the confirmation input of email in the register form is equal to the first email input.
-     * @param email first email input in the register form. Attribute of a UserDto object.
+     *
+     * @param email      first email input in the register form. Attribute of a UserDto object.
      * @param emailCheck second email input in the register form. Attribute of a UserDto object.
      * @return a Boolean.
      */
-    public Boolean emailCheck(String email, String emailCheck){
+    public Boolean emailCheck(String email, String emailCheck) {
         return email.equals(emailCheck);
     }
 }

@@ -1,7 +1,7 @@
 package com.paymybuddy.controllers;
 
 import com.paymybuddy.dto.UserDto;
-import com.paymybuddy.dto.UserDtoService;
+import com.paymybuddy.dtoService.UserDtoService;
 import com.paymybuddy.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

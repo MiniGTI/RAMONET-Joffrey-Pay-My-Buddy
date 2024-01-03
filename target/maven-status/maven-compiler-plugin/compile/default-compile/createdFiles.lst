@@ -1,8 +1,9 @@
+com/paymybuddy/dtoService/UserDtoService.class
 com/paymybuddy/RamonetJoffreyPayMyBuddyApplication.class
 com/paymybuddy/repository/UserRepository.class
+com/paymybuddy/controllers/HomeController.class
 com/paymybuddy/model/BankAccount.class
 com/paymybuddy/controllers/RegisterSuccessController.class
-com/paymybuddy/dto/UserDtoService.class
 com/paymybuddy/service/BankAccountService.class
 com/paymybuddy/configuration/CustomUserDetailsService.class
 com/paymybuddy/model/Transaction.class
@@ -11,7 +12,13 @@ com/paymybuddy/repository/TransactionRepository.class
 com/paymybuddy/controllers/LoginController.class
 com/paymybuddy/service/UserService.class
 com/paymybuddy/model/User.class
+com/paymybuddy/controllers/ContactController.class
+com/paymybuddy/model/BuddyRelation.class
+com/paymybuddy/repository/BuddyRelationRepository.class
 com/paymybuddy/dto/UserDto.class
 com/paymybuddy/repository/BankAccountRepository.class
+com/paymybuddy/dtoService/BuddyDtoService.class
+com/paymybuddy/dto/BuddyDto.class
 com/paymybuddy/controllers/RegisterController.class
 com/paymybuddy/service/TransactionService.class
+com/paymybuddy/controllers/AddBuddyController.class
