@@ -70,9 +70,9 @@ public class AddBuddyControllerTest {
     void shouldReturnAddBuddyErrorSameEmailIfTheBuddyEmailIsTheSameOfPrincipalName() {
         BuddyDto buddyDto = new BuddyDto();
         
-        when(buddyDtoService.sameEmailCheck(buddyDto.getEmail(), principal.getName())).thenReturn(true);
+        when(buddyDtoService.sameEmailCheck(buddyDto)).thenReturn(true);
         
-        String result = addBuddyController.addNewBuddy(buddyDto, principal);
+        String result = addBuddyController.addNewBuddy(buddyDto);
         
         String expectedResult = "redirect:/addBuddy?errorSameEmail";
         
@@ -84,9 +84,9 @@ public class AddBuddyControllerTest {
     void shouldReturnAddBuddyErrorEmailIfCheckIsFalse() {
         BuddyDto buddyDto = new BuddyDto();
         
-        when(buddyDtoService.buddyEmailExistCheck(buddyDto.getEmail())).thenReturn(false);
+        when(buddyDtoService.sameEmailCheck(buddyDto)).thenReturn(false);
         
-        String result = addBuddyController.addNewBuddy(buddyDto, principal);
+        String result = addBuddyController.addNewBuddy(buddyDto);
         
         String expectedResult = "redirect:/addBuddy?errorEmail";
         
@@ -98,9 +98,9 @@ public class AddBuddyControllerTest {
     void shouldReturnContactIfEmailCheckIsTrueAndRelationAlreadyExistFalse() {
         BuddyDto buddyDto = new BuddyDto();
         
-        when(buddyDtoService.buddyEmailExistCheck(buddyDto.getEmail())).thenReturn(true);
+        when(userService.buddyEmailExistCheck(buddyDto)).thenReturn(true);
         when(userService.getPrincipalId(principal)).thenReturn(1);
-        String result = addBuddyController.addNewBuddy(buddyDto, principal);
+        String result = addBuddyController.addNewBuddy(buddyDto);
         
         String expectedResult = "redirect:/contact";
         
@@ -112,10 +112,10 @@ public class AddBuddyControllerTest {
     void shouldReturnContactIfEmailCheckIsTrueAndRelationAlreadyExistTrue() {
         BuddyDto buddyDto = new BuddyDto();
         
-        when(buddyDtoService.buddyEmailExistCheck(buddyDto.getEmail())).thenReturn(true);
+        when(userService.buddyEmailExistCheck(buddyDto)).thenReturn(true);
         when(userService.getPrincipalId(principal)).thenReturn(1);
-        when(buddyDtoService.buddyRelationAlreadyExist(1, 0)).thenReturn(true);
-        String result = addBuddyController.addNewBuddy(buddyDto, principal);
+        when(userService.buddyRelationAlreadyExist(buddyDto)).thenReturn(true);
+        String result = addBuddyController.addNewBuddy(buddyDto);
         
         String expectedResult = "redirect:/addBuddy?errorRelation";
         
@@ -127,10 +127,10 @@ public class AddBuddyControllerTest {
     void shouldReturnContactIfEmailCheckIsTrueAndBuddyIsPresent() {
         BuddyDto buddyDto = new BuddyDto();
         
-        when(buddyDtoService.buddyEmailExistCheck(buddyDto.getEmail())).thenReturn(true);
+        when(userService.buddyEmailExistCheck(buddyDto)).thenReturn(true);
         when(userService.getPrincipalId(principal)).thenReturn(1);
         when(userService.getByEmail(buddyDto.getEmail())).thenReturn(Optional.of(user));
-        String result = addBuddyController.addNewBuddy(buddyDto, principal);
+        String result = addBuddyController.addNewBuddy(buddyDto);
         
         String expectedResult = "redirect:/contact";
         

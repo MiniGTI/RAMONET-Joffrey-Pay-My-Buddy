@@ -115,7 +115,7 @@ public class TransactionService {
      * @param sizePage transaction number per page.
      * @return a Page.
      */
-    public Page<Transaction> getTheLastTransactionByBankAccountId(int numPage, int sizePage) {
+    public Page<Transaction> getTransactionByBankAccountId(int numPage, int sizePage) {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
         

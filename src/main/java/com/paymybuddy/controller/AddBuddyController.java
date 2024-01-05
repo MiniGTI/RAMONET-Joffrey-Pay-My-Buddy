@@ -2,16 +2,12 @@ package com.paymybuddy.controller;
 
 import com.paymybuddy.dto.BuddyDto;
 import com.paymybuddy.dtoService.BuddyDtoService;
-import com.paymybuddy.model.User;
 import com.paymybuddy.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.security.Principal;
-import java.util.Optional;
 
 /**
  * Controller class for the addBuddy.html.
@@ -66,33 +62,24 @@ public class AddBuddyController {
      * Add new Buddy form.
      *
      * @param buddyDto  The buddyDto object required to add the new connexion.
-     * @param principal The User actually authenticated.
      * @return the url to te contact page.
      */
     @PostMapping
     public String addNewBuddy(
-            @ModelAttribute("buddyDto") BuddyDto buddyDto, Principal principal) {
-        if(buddyDtoService.sameEmailCheck(buddyDto.getEmail(), principal.getName())) {
+            @ModelAttribute("buddyDto") BuddyDto buddyDto) {
+        if(buddyDtoService.sameEmailCheck(buddyDto)){
             return "redirect:/addBuddy?errorSameEmail";
         }
         
-        if(!buddyDtoService.buddyEmailExistCheck(buddyDto.getEmail())) {
+        if(!userService.buddyEmailExistCheck(buddyDto)) {
             return "redirect:/addBuddy?errorEmail";
         }
         
-        Integer principalId = userService.getPrincipalId(principal);
-        Integer buddyId = 0;
-        Optional<User> optBuddy = userService.getByEmail(buddyDto.getEmail());
-        if(optBuddy.isPresent()) {
-            buddyId = optBuddy.get()
-                    .getId();
-        }
-        
-        if(buddyDtoService.buddyRelationAlreadyExist(principalId, buddyId)) {
+        if(userService.buddyRelationAlreadyExist(buddyDto)) {
             return "redirect:/addBuddy?errorRelation";
         }
         
-        buddyDtoService.saveNewBuddy(principal, buddyDto);
+        userService.saveNewBuddy(buddyDto);
         return "redirect:/contact";
     }
 }

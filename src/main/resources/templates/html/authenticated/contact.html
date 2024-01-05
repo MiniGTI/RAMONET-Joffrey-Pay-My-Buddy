@@ -59,10 +59,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${buddyList.isEmpty()}">
+            <tr th:if="${buddys.isEmpty()}">
                 <th class="col-md-3 ">Your have no buddy yet.</th>
             </tr>
-            <tr th:if="${buddyList}" th:each="buddy: ${buddyList.content}">
+            <tr th:if="${buddys}" th:each="buddy: ${buddys}">
                 <th scope="row"><span th:text="${buddy.getLastname()}"></span></th>
                 <td><span th:text="${buddy.getFirstname()}"></span></td>
                 <td><a class="btn btn-primary" href="/transfer" role="button">Transfert</a>

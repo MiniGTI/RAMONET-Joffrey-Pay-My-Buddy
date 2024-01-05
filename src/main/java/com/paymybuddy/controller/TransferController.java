@@ -6,6 +6,7 @@ import com.paymybuddy.model.Transaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.BankAccountService;
 import com.paymybuddy.service.TransactionService;
+import com.paymybuddy.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +35,8 @@ public class TransferController {
      */
     private final BankAccountService bankAccountService;
     
+    private final UserService userService;
+    
     /**
      * TransferController constructor.
      *
@@ -41,10 +44,12 @@ public class TransferController {
      * @param transactionService to access at the transaction service class.
      * @param bankAccountService to access at the bankAccount service class.
      */
-    public TransferController(BuddyDtoService buddyDtoService, TransactionService transactionService, BankAccountService bankAccountService) {
+    public TransferController(BuddyDtoService buddyDtoService, TransactionService transactionService, BankAccountService bankAccountService,
+                              UserService userService) {
         this.buddyDtoService = buddyDtoService;
         this.transactionService = transactionService;
         this.bankAccountService = bankAccountService;
+        this.userService = userService;
     }
     
     /**
@@ -69,11 +74,11 @@ public class TransferController {
     public String transfer(Principal principal, Model model,
                            @RequestParam(defaultValue = "0") Integer page) {
         Integer pageSize = 3;
-        
-        List<User> buddyList = buddyDtoService.getBuddys(principal);
+     
+        List<User> buddyList = userService.getAllBuddyId();
         
         Page<Transaction> transactionsPage =
-                transactionService.getTheLastTransactionByBankAccountId(page, pageSize);
+                transactionService.getTransactionByBankAccountId(page, pageSize);
         
         List<Transaction> transactions = transactionsPage.getContent();
         

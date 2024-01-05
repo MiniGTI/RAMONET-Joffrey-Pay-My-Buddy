@@ -1,6 +1,8 @@
 package com.paymybuddy.repository;
 
 import com.paymybuddy.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -22,16 +24,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
      */
     Optional<User> findByEmail(String email);
     
-    /**
-     * Method to get all buddy's id from the link table user_buddy.
-     *
-     * @param userId id of the principal.
-     * @return An iterable of Integer, all buddy's id.
-     */
-    @Query(
-            value = "SELECT buddy_id FROM user_buddy WHERE user_id = :userId",
-            nativeQuery = true)
-    Iterable<Integer> getAllBuddyId(
-            @Param("userId") Integer userId);
-
+    @Query(value = "SELECT * FROM user JOIN user_buddys ON (user.id = user_buddys.buddys_id) WHERE user_buddys.user_id = :id", nativeQuery = true)
+    Page<User> getPageBuddyById(@Param("id") Integer id, Pageable pageable);
+    
+    
 }
