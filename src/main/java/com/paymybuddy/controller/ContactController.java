@@ -2,7 +2,8 @@ package com.paymybuddy.controller;
 
 import com.paymybuddy.dtoService.BuddyDtoService;
 import com.paymybuddy.model.User;
-import org.springframework.data.domain.*;
+import com.paymybuddy.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.security.Principal;
 import java.util.List;
 
 /**
@@ -24,35 +24,36 @@ public class ContactController {
      * Call BuddyDtoService.
      */
     private final BuddyDtoService buddyDtoService;
+    private final UserService userService;
     
     /**
      * ContactController constructor.
      */
-    public ContactController(BuddyDtoService buddyDtoService) {
+    public ContactController(BuddyDtoService buddyDtoService, UserService userService) {
         this.buddyDtoService = buddyDtoService;
+        this.userService = userService;
     }
     
     /**
      * Add the BuddyList of the authenticated User.
      *
-     * @param principal authenticated User.
      * @param model     to parse the buddyList data to the view.
      * @param page      the configuration of the pagination.
      * @return contact.html
      */
     @GetMapping()
-    public String buddyList(Principal principal, Model model,
+    public String buddyList(Model model,
                             @RequestParam(defaultValue = "0") Integer page) {
-        List<User> buddys = buddyDtoService.getBuddys(principal);
+        Integer pageSize = 3;
         
-        Pageable pageable = PageRequest.of(page, 2);
+        Page<User> buddyPage = userService.getPageBuddyById(page, pageSize);
         
+        List<User> buddys = buddyPage.getContent();
         
-        
-        Page<User> buddyList = new PageImpl<>(buddys, pageable, buddys.size());
-        
-        model.addAttribute("buddyList", buddyList);
-        model.addAttribute("currentPage", pageable);
+        model.addAttribute("buddys", buddys);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", buddyPage.getTotalPages());
+        model.addAttribute("totalItem", buddyPage.getTotalElements());
         return "/html/authenticated/contact";
     }
     
@@ -60,14 +61,12 @@ public class ContactController {
      * The delete button.
      * To delete the buddy relation linked.
      *
-     * @param principal User authenticated.
      * @param buddyId   id of the buddy.
      * @return contact.html.
      */
     @PostMapping()
-    public String deleteBuddy(Principal principal,
-                              @RequestParam Integer buddyId) {
-        buddyDtoService.deleteBuddy(principal, buddyId);
+    public String deleteBuddy(@RequestParam Integer buddyId) {
+        userService.deleteBuddy(buddyId);
         return "redirect:/contact";
     }
 }

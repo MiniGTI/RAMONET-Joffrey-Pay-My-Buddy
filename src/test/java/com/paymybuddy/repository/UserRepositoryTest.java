@@ -1,7 +1,6 @@
 package com.paymybuddy.repository;
 
 import com.paymybuddy.model.BankAccount;
-import com.paymybuddy.model.BuddyRelation;
 import com.paymybuddy.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -83,13 +82,5 @@ public class UserRepositoryTest {
         Assertions.assertNull(entityManager.find(User.class, USER.getId()));
     }
     
-    @Test
-    void userGetAllBuddyIdTest() {
-        BuddyRelation buddyRelation = new BuddyRelation(1, 2);
-        entityManager.persist(buddyRelation);
-        
-        Iterable<Integer> result = userRepository.getAllBuddyId(1);
-        
-        assertThat(result).contains(buddyRelation.getBuddy_id());
-    }
+
 }

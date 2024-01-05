@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * User model.
@@ -28,11 +29,8 @@ public class User {
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;
     
-    @OneToMany(
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private List<User> buddys;
-    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<User> buddys = new HashSet<>();
 
     public User(String email, String password, String firstname, String lastname, String role,
                 BankAccount bankAccount) {
@@ -54,4 +52,15 @@ public class User {
         this.lastname = lastname;
         this.role = role;
     }
+    
+    public void addBuddy(User user) {
+        buddys.add(user);
+        user.getBuddys().add(this);
+    }
+    
+    public void removeBuddy(User user) {
+        buddys.remove(user);
+        user.getBuddys().remove(this);
+    }
+    
 }

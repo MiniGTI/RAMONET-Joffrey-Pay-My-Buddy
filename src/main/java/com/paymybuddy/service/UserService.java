@@ -1,5 +1,6 @@
 package com.paymybuddy.service;
 
+import com.paymybuddy.dto.BuddyDto;
 import com.paymybuddy.dto.PasswordDto;
 import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.dto.UserModifyDto;
@@ -8,13 +9,18 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service class for the User object.
@@ -112,20 +118,7 @@ public class UserService {
      */
     
     public User save(UserModifyDto userModifyDto) {
-        User user = null;
-        
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
-        
-        String name = authentication.getName();
-        
-        Optional<User> optUser = getByEmail(name);
-        
-        if(optUser.isPresent()) {
-            user = optUser.get();
-        } else {
-            throw new RuntimeException("no user find");
-        }
+        User user = getTheAuthenticatedUser();
         
         if(!userModifyDto.getFirstName()
                 .isEmpty()) {
@@ -150,6 +143,50 @@ public class UserService {
      * @return user.
      */
     public User save(PasswordDto passwordDto) {
+        User user = getTheAuthenticatedUser();
+        
+        if(!passwordDto.getNewPassword()
+                .isEmpty()) {
+            user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
+        }
+        return userRepository.save(user);
+    }
+    
+    public User saveNewBuddy(BuddyDto buddyDto){
+        
+        User authenticatedUser = getTheAuthenticatedUser();
+        User buddy = getUserByBuddyDto(buddyDto);
+        
+        Set<User> buddys = authenticatedUser.getBuddys();
+        buddys.add(buddy);
+        authenticatedUser.setBuddys(buddys);
+        
+        return userRepository.save(authenticatedUser);
+    }
+    
+    /**
+     * Method to check if the email input exist in the User Database.
+     *
+     * @return A Boolean.
+     */
+    public Boolean buddyEmailExistCheck(BuddyDto buddyDto) {
+        
+        Optional<User> optUserFind = getByEmail(buddyDto.getEmail());
+        
+        return optUserFind.isPresent();
+    }
+    
+    public Boolean buddyRelationAlreadyExist(BuddyDto buddyDto){
+        
+        User authenticatedUser = getTheAuthenticatedUser();
+        User buddy = getUserByBuddyDto(buddyDto);
+        
+        Set<User> buddys = authenticatedUser.getBuddys();
+        
+        return buddys.contains(buddy);
+    }
+    
+    public User getTheAuthenticatedUser(){
         User user = null;
         
         Authentication authentication = SecurityContextHolder.getContext()
@@ -159,20 +196,14 @@ public class UserService {
         
         Optional<User> optUser = getByEmail(name);
         
-        if(optUser.isPresent()) {
+        if(optUser.isPresent()){
             user = optUser.get();
         } else {
-            throw new RuntimeException("no user find");
+            throw new RuntimeException("Problem to get the Principal.");
         }
-        
-        if(!passwordDto.getNewPassword()
-                .isEmpty()) {
-            user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
-        }
-        return userRepository.save(user);
+        return user;
     }
-    
-    
+
     /**
      * Method to get the Id of the principal
      *
@@ -196,10 +227,58 @@ public class UserService {
     /**
      * Method to get a buddy's id into a list of user's buddys.
      *
-     * @param userId id of the user.
      * @return a list of Integer.
      */
-    public Iterable<Integer> getAllBuddyId(Integer userId) {
-        return userRepository.getAllBuddyId(userId);
+    public List<User> getAllBuddyId() {
+        User authenticatedUser = getTheAuthenticatedUser();
+        return authenticatedUser.getBuddys().stream().toList();
     }
+    
+    public Page<User> getPageBuddyById(int numPage, int sizePage) {
+        
+
+        User authenticatedUser = getTheAuthenticatedUser();
+        
+        Integer userId = authenticatedUser
+                .getId();
+        
+        Pageable pageable = PageRequest.of(numPage, sizePage);
+        
+        return userRepository.getPageBuddyById(userId, pageable);
+    }
+    
+    
+    /**
+     * Method to delete the buddy relation.
+     *
+      * @param id The id of the buddy.
+     */
+    public void deleteBuddy(Integer id) {
+        User authenticatedUser = getTheAuthenticatedUser();
+        
+        Optional<User> optBuddy = getBy(id);
+        User buddy = null;
+        
+        if(optBuddy.isPresent()){
+            buddy = optBuddy.get();
+        }
+        
+        Set<User> buddys = authenticatedUser.getBuddys();
+        buddys.remove(buddy);
+        userRepository.save(authenticatedUser);
+    }
+    
+    private User getUserByBuddyDto(BuddyDto buddyDto){
+        
+        User buddy = null;
+        Optional<User> optBuddy = getByEmail(buddyDto.getEmail());
+        
+        if(optBuddy.isPresent()) {
+            buddy = optBuddy.get();
+        } else {
+            throw new RuntimeException("Buddy not found.");
+        }
+        return buddy;
+    }
+    
 }
