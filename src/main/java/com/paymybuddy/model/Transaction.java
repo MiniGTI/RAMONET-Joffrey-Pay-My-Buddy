@@ -22,23 +22,23 @@ public class Transaction {
     private Integer id;
     @Column(name = "transaction_number")
     private String transactionNumber;
-    private String connexion;
+    private String connection;
     private BigDecimal amount;
     private String description;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    @OneToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
+    @ManyToOne(
+            cascade = CascadeType.ALL)
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;
     
-    public Transaction(String description, String connexion, BigDecimal amount) {
+    public Transaction(String description, String connection, BigDecimal amount, BankAccount bankAccount) {
         this.transactionNumber = UUID.randomUUID()
                 .toString();
         this.createdAt = LocalDateTime.now();
         this.description = description;
-        this.connexion = connexion;
+        this.connection = connection;
         this.amount = amount;
+        this.bankAccount = bankAccount;
     }
 }

@@ -20,6 +20,9 @@ import java.util.Optional;
 @Service
 public class BuddyDtoService {
     
+    /**
+     * Logger class.
+     */
     private final static Logger logger = LoggerFactory.getLogger(BuddyDtoService.class);
     
     /**

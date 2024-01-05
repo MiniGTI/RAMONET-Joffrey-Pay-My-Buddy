@@ -1,8 +1,8 @@
 package com.paymybuddy;
 
-import com.paymybuddy.controllers.LoginController;
-import com.paymybuddy.controllers.RegisterController;
-import com.paymybuddy.controllers.RegisterSuccessController;
+import com.paymybuddy.controller.LoginController;
+import com.paymybuddy.controller.RegisterController;
+import com.paymybuddy.controller.RegisterSuccessController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

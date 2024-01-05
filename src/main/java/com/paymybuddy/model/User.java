@@ -27,11 +27,13 @@ public class User {
             orphanRemoval = true)
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;
+    
     @OneToMany(
             fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private List<User> buddys;
     
+
     public User(String email, String password, String firstname, String lastname, String role,
                 BankAccount bankAccount) {
         this.bankAccount = bankAccount;

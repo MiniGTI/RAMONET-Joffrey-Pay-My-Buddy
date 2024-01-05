@@ -1,6 +1,5 @@
 package com.paymybuddy.controller;
 
-import com.paymybuddy.controllers.RegisterController;
 import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.dtoService.UserDtoService;
 import org.junit.jupiter.api.Assertions;

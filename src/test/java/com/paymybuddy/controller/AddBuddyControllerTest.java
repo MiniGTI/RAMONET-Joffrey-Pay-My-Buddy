@@ -1,6 +1,5 @@
 package com.paymybuddy.controller;
 
-import com.paymybuddy.controllers.AddBuddyController;
 import com.paymybuddy.dto.BuddyDto;
 import com.paymybuddy.dtoService.BuddyDtoService;
 import com.paymybuddy.model.BankAccount;

@@ -1,11 +1,15 @@
 package com.paymybuddy.service;
 
+import com.paymybuddy.dto.PasswordDto;
 import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.dto.UserModifyDto;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -97,6 +101,74 @@ public class UserService {
         user.setRole("USER");
         user.setBankAccount(new BankAccount());
         
+        return userRepository.save(user);
+    }
+    
+    /**
+     * Method to update the principal's firstname, lastname, email with the userModifyDto parsed.
+     *
+     * @param userModifyDto the object with the data from the form.
+     * @return user.
+     */
+    
+    public User save(UserModifyDto userModifyDto) {
+        User user = null;
+        
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
+        
+        String name = authentication.getName();
+        
+        Optional<User> optUser = getByEmail(name);
+        
+        if(optUser.isPresent()) {
+            user = optUser.get();
+        } else {
+            throw new RuntimeException("no user find");
+        }
+        
+        if(!userModifyDto.getFirstName()
+                .isEmpty()) {
+            user.setFirstname(userModifyDto.getFirstName());
+        }
+        if(!userModifyDto.getLastname()
+                .isEmpty()) {
+            user.setLastname(userModifyDto.getLastname());
+        }
+        if(!userModifyDto.getEmail()
+                .isEmpty()) {
+            user.setEmail(userModifyDto.getEmail());
+        }
+        System.out.println(userModifyDto);
+        return userRepository.save(user);
+    }
+    
+    /**
+     * Method to update the principal's password with the passwordDto parsed .
+     *
+     * @param passwordDto the object with the data from the form.
+     * @return user.
+     */
+    public User save(PasswordDto passwordDto) {
+        User user = null;
+        
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
+        
+        String name = authentication.getName();
+        
+        Optional<User> optUser = getByEmail(name);
+        
+        if(optUser.isPresent()) {
+            user = optUser.get();
+        } else {
+            throw new RuntimeException("no user find");
+        }
+        
+        if(!passwordDto.getNewPassword()
+                .isEmpty()) {
+            user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
+        }
         return userRepository.save(user);
     }
     

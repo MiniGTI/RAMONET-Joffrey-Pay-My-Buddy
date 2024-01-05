@@ -23,9 +23,8 @@ public class BankAccount {
     private String swift;
     
     @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JoinColumn(name = "bank_account_id")
+            fetch =FetchType.EAGER)
+   @JoinColumn(name = "bank_account_id")
     private List<Transaction> transactions;
     
     public BankAccount() {
