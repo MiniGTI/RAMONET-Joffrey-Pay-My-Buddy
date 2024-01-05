@@ -35,11 +35,11 @@ public class TransactionRepositoryTest {
     void transactionUpdateTest(){
         entityManager.persist(TRANSACTION);
         String newConnexion = "newtest@gmail.com";
-        TRANSACTION.setConnexion(newConnexion);
+        TRANSACTION.setConnection(newConnexion);
         
         transactionRepository.save(TRANSACTION);
         
-        Assertions.assertEquals(newConnexion, entityManager.find(Transaction.class, TRANSACTION.getId()).getConnexion());
+        Assertions.assertEquals(newConnexion, entityManager.find(Transaction.class, TRANSACTION.getId()).getConnection());
     }
     
     @Test

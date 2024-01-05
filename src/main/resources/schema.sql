@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS=0;
 CREATE TABLE bank_account
 (
     id      INTEGER        NOT NULL AUTO_INCREMENT,
@@ -13,10 +14,11 @@ CREATE TABLE transactions
     amount             DECIMAL(10, 2) NOT NULL,
     bank_account_id    INTEGER        NOT NULL,
     created_at         DATETIME(6)    NOT NULL,
-    connexion          VARCHAR(255),
+    connection         VARCHAR(255),
     description        VARCHAR(255)   NOT NULL,
     transaction_number VARCHAR(255)   NOT NULL,
     PRIMARY KEY (id),
+    INDEX (bank_account_id),
     FOREIGN KEY (bank_account_id) REFERENCES bank_account (id)
 ) ENGINE = InnoDB;
 

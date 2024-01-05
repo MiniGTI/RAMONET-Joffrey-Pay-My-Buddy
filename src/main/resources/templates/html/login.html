@@ -15,6 +15,9 @@
     <div class="title">
         <h2>Pay My Buddy</h2>
     </div>
+    <div th:if="${param.delete}" class="alert alert-danger ">
+        <p class="text-danger my-auto">Your account have been deleted successfully.</p>
+    </div>
     <div th:if="${param.error}" class="alert alert-danger ">
         <p class="text-danger my-auto">Invalid username or/and password.</p>
     </div>
@@ -30,7 +33,7 @@
             <i class="bi bi-envelope"></i>
             <input type="text" class="form-control" name="email" placeholder="Email" required/>
             <i class="bi bi-asterisk"></i>
-            <input type="text" class="form-control" name="password" placeholder="Password" required/>
+            <input type="password" class="form-control" name="password" placeholder="Password" required/>
             <div class="checkbox">
                 <label>
                     <input type="checkbox" name="remember-me"> Remember me

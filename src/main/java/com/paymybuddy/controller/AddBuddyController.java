@@ -1,4 +1,4 @@
-package com.paymybuddy.controllers;
+package com.paymybuddy.controller;
 
 import com.paymybuddy.dto.BuddyDto;
 import com.paymybuddy.dtoService.BuddyDtoService;

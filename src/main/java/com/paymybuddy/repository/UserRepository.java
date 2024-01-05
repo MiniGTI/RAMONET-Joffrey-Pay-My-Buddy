@@ -33,4 +33,5 @@ public interface UserRepository extends CrudRepository<User, Integer> {
             nativeQuery = true)
     Iterable<Integer> getAllBuddyId(
             @Param("userId") Integer userId);
+
 }

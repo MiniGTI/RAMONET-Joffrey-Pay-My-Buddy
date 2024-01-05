@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>Profile</title>
@@ -16,7 +16,7 @@
             <h2 class="col-sm-3 col-md-2 col-lg-2">Pay My Buddy</h2>
             <nav class="col-sm-8 offset-sm-2 col-md-6 offset-md-4 col-lg-3 offset-lg-7 ">
                 <ul class="nav">
-                    <li role="presentation"><a href="home">Home</a></li>
+                    <li role="presentation"><a href="/">Home</a></li>
                     <li role="presentation"><a href="transfer">Transfer</a></li>
                     <li role="presentation">Profile</li>
                     <li role="presentation"><a href="contact">Contact</a></li>
@@ -33,7 +33,7 @@
 </div>
 <nav class="nav-breadcrumb">
     <ol class="breadcrumb my-auto">
-        <li class="breadcrumb-item"><a href="home.html">Home</a></li>
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item">Profile</li>
     </ol>
 </nav>
@@ -55,10 +55,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="first">
-                            <th scope="row">name</th>
-                            <td>description</td>
-                            <td>#€</td>
+                        <tr th:if="${transaction == null}">
+                            <th class="col-md-8 col-lg-3">You have no transactions yet.</th>
+                        </tr>
+                        <tr th:if="${transaction}" class="first">
+                            <th scope="row"><span th:text="${transaction.getConnection()}"></span></th>
+                            <td><span th:text="${transaction.getDescription()}"></span></td>
+                            <td><span th:text="${transaction.getAmount}"></span></td>
                         </tr>
                         </tbody>
                     </div>
@@ -69,25 +72,27 @@
 </div>
 <div class="container form-head col-sm-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2">
     <div class="row">
-        <h3 class="col-md-6 my-auto text-start">Profile</h3>
-        <div class=" button col-md-6 text-end">
-            <button class="text-end btn btn-primary btn-lg" type="submit">Save</button>
+        <div th:if="${param.profileSuccess}" class="alert alert-success">
+            <p class="text-success my-auto">Profile updated successfully.</p>
         </div>
-        <form class="form-profile">
-            <div class="bg-secondary-soft px-4 py-5">
+        <h3 class="col-md-6 my-auto text-start">Profile</h3>
+        <form class="form-profile" th:action="@{/profile}" th:object="${userModifyDto}" method="post" role="form">
+            <div class=" button col-md-6 col-lg-2 offset-lg-10 text-end">
+                <button class="text-end btn btn-primary btn-lg" type="submit">Save</button>
+            </div>
+            <div class="bg-secondary-soft px-4 py-1">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">First Name *</label>
-                        <input type="text" class="form-control" aria-label="First name"
-                               value="#QUERY USER FIRSTNAME"/>
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" aria-label="First name" th:field="*{firstName}" th:placeholder="${firstname}">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Last Name *</label>
-                        <input type="text" class="form-control" aria-label="Last name" value="#QUERY USER LASTNAME"/>
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" aria-label="Last name" th:field="*{lastname}" th:placeholder="${lastname}">
                     </div>
                     <div class="col-md-6">
-                        <label for="inputEmail4" class="form-label">Email *</label>
-                        <input type="email" class="form-control" id="inputEmail4" value="#QUERY USER EMAIL"/>
+                        <label for="inputEmail4" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inputEmail4" th:field="*{email}" th:placeholder="${email}">
                     </div>
                 </div>
             </div>
@@ -96,24 +101,30 @@
 </div>
 <div class="container form-head col-sm-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2">
     <div class="row">
-        <h3 class="col-md-6 my-auto text-start">Profile</h3>
-        <div class=" button col-md-6 text-end">
-            <button class="text-end btn btn-primary btn-lg" type="submit">Save</button>
+        <div th:if="${param.passwordSuccess}" class="alert alert-success">
+            <p class="text-success my-auto">Password updated successfully.</p>
         </div>
-        <form class="form-password">
-            <div class="bg-secondary-soft px-4 py-5">
+        <div th:if="${param.passwordError}" class="alert alert-danger">
+            <p class="text-danger my-auto">They have an error in a password field.</p>
+        </div>
+        <h3 class="col-md-6 my-auto text-start">Password</h3>
+        <form class="form-password" th:action="@{/profile/password}" th:object="${passwordDto}" method="post" role="form">
+            <div class=" button col-lg-2 offset-lg-10 text-end">
+                <button class="text-end btn btn-primary btn-lg" type="submit">Save</button>
+            </div>
+            <div class="bg-secondary-soft px-4 py-1">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1" class="form-label">Old password *</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" required/>
+                        <input type="password" class="form-control" id="exampleInputPassword1" th:field="*{oldPassword}" required/>
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputPassword2" class="form-label">New password *</label>
-                        <input type="password" class="form-control" id="exampleInputPassword2" required/>
+                        <input type="password" class="form-control" id="exampleInputPassword2" th:field="*{newPassword}" required/>
                     </div>
                     <div class="col-md-12">
                         <label for="exampleInputPassword3" class="form-label">Confirm Password *</label>
-                        <input type="password" class="form-control" id="exampleInputPassword3" required/>
+                        <input type="password" class="form-control" id="exampleInputPassword3" th:field="*{newPasswordCheck}" required/>
                     </div>
                 </div>
             </div>
@@ -121,34 +132,84 @@
     </div>
 </div>
 
-<div class="container table-head col-sm-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2">
-    <div class="row">
-        <h3 class="col-md-6 my-auto text-start">Bank Account</h3>
-        <div class=" button col-md-6 text-end">
-            <a class=" btn btn-primary btn-lg" href="#" role="button">Reload</a>
-        </div>
-        <div class="table-responsive">
-            <table class="table">
-                <tbody>
-                <tr class="first">
-                    <th scope="row">IBAN</th>
-                    <td>BankAccountIban</td>
-                </tr>
-                <tr>
-                    <th scope="row">SWIFT</th>
-                    <td>BankAccountSwift</td>
-                </tr>
-                <tr class="last">
-                    <th scope="row">Balance</th>
-                    <td>BankAccountBalance</td>
-                </tr>
-                </tbody>
-            </table>
+<div class="container form col-sm-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2">
+    <div id="ibanModal" class="modalAccount">
+        <div class="modalH3 col-sm-12 col-md-6 offset-md-3 col-lg-8 offset-lg-2">
+            <h3 th:text="${iban}"></h3>
         </div>
     </div>
+    <div class="row coll-lg-12 my-1">
+        <p class="col-lg-2 my-auto">IBAN</p>
+        <button class=" btn btn-primary btn-sm col-lg-2" id="ibanBtn">View IBAN</button>
+    </div>
+
+    <script>
+        const modalIban = document.getElementById("ibanModal");
+        const btnIban = document.getElementById("ibanBtn");
+
+        btnIban.onclick = function () {
+            modalIban.style.display = "block";
+        }
+        window.addEventListener('click', function (event) {
+            if (event.target === modalIban) {
+                modalIban.style.display = "none";
+            }
+        })
+    </script>
+
+    <div id="swiftModal" class="modalAccount">
+        <div class="modalH3 col-sm-12 col-md-6 offset-md-3 col-lg-8 offset-lg-2">
+            <h3 th:text="${swift}"></h3>
+        </div>
+    </div>
+    <div class="row coll-lg-12 my-1">
+        <p class="col-lg-2 my-auto">SWIFT</p>
+        <button class=" btn btn-primary btn-sm col-lg-2" id="swiftBtn">View SWIFT</button>
+    </div>
+
+    <script>
+        const modalSwift = document.getElementById("swiftModal");
+        const btnSwift = document.getElementById("swiftBtn");
+
+        btnSwift.onclick = function () {
+            modalSwift.style.display = "block";
+        }
+        window.addEventListener('click', function (event) {
+            if (event.target === modalSwift) {
+                modalSwift.style.display = "none";
+            }
+        })
+    </script>
+
+    <div id="balanceModal" class="modalAccount">
+        <div class="modalH3 col-sm-12 col-md-6 offset-md-3 col-lg-8 offset-lg-2">
+            <h3 th:text="${balance}"></h3>
+        </div>
+    </div>
+    <div class="row coll-lg-12 my-1">
+        <p class="col-lg-2 my-auto">BALANCE</p>
+        <button class=" btn btn-primary btn-sm col-lg-2" id="balanceBtn">View BALANCE</button>
+    </div>
+
+    <script>
+        const modalBalance = document.getElementById("balanceModal");
+        const btnBalance = document.getElementById("balanceBtn");
+
+        btnBalance.onclick = function () {
+            modalBalance.style.display = "block";
+        }
+        window.addEventListener('click', function (event) {
+            if (event.target === modalBalance) {
+                modalBalance.style.display = "none";
+            }
+        })
+    </script>
+
 </div>
 <div class="row delete col-md-2 offset-md-5 mb-3">
-    <a class=" btn btn-danger" href="delete.html" role="button">Delete Account</a>
+    <form method="post" th:action="@{/profile/delete}" role="form">
+    <button class=" btn btn-danger" type="submit" >Delete Account</button>
+    </form>
 </div>
 </body>
 </html>

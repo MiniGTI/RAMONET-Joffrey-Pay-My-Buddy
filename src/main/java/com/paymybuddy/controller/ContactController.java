@@ -1,4 +1,4 @@
-package com.paymybuddy.controllers;
+package com.paymybuddy.controller;
 
 import com.paymybuddy.dtoService.BuddyDtoService;
 import com.paymybuddy.model.User;
@@ -20,7 +20,9 @@ import java.util.List;
 @RequestMapping("/contact")
 public class ContactController {
     
-    
+    /**
+     * Call BuddyDtoService.
+     */
     private final BuddyDtoService buddyDtoService;
     
     /**
@@ -43,9 +45,12 @@ public class ContactController {
                             @RequestParam(defaultValue = "0") Integer page) {
         List<User> buddys = buddyDtoService.getBuddys(principal);
         
-        Pageable pageable = PageRequest.of(page, 2, Sort.unsorted());
+        Pageable pageable = PageRequest.of(page, 2);
+        
+        
         
         Page<User> buddyList = new PageImpl<>(buddys, pageable, buddys.size());
+        
         model.addAttribute("buddyList", buddyList);
         model.addAttribute("currentPage", pageable);
         return "/html/authenticated/contact";
