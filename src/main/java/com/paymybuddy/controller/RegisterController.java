@@ -76,6 +76,10 @@ public class RegisterController {
     public String registrationUser(
             @ModelAttribute("userDto") UserDto userDto) {
         
+        if(userService.getByEmail(userDto.getEmail()).isPresent()){
+            return "redirect:/register?errorEmailAlreadyExist";
+        }
+        
         if(!inputChecker.sameInputCheck(userDto.getEmail(), userDto.getEmailCheck())) {
             return "redirect:/register?errorEmail";
         }

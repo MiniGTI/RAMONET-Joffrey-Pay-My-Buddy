@@ -80,7 +80,7 @@ public class ProfileController {
         BigDecimal balance = authenticatedUser.getBankAccount()
                 .getBalance();
         
-        Transaction transaction = transactionService.getLastTransactionByBankAccountId(authenticatedUser.getId());
+        Transaction transaction = transactionService.getLastTransactionByBankAccountId(authenticatedUser.getBankAccount().getId());
         
         model.addAttribute("iban", iban);
         model.addAttribute("swift", swift);
