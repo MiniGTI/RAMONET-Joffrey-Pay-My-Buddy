@@ -20,6 +20,9 @@
     <div th:if="${param.errorEmail}" class="alert alert-danger ">
         <p class="text-danger my-auto">The two email fields are not identical.</p>
     </div>
+    <div th:if="${param.errorEmailAlreadyExist}" class="alert alert-danger ">
+        <p class="text-danger my-auto">This email is already register.</p>
+    </div>
     <form th:action="@{/register}" th:object="${userDto}" method="post" role="form">
         <div class="inner-addon">
             <i class="bi bi-envelope"></i>

@@ -10,11 +10,14 @@ import com.paymybuddy.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,6 +112,7 @@ public class UserService {
     
     /**
      * Method to update the principal's firstname, lastname or/and email with the UserModifyDto object parsed from the profileModify form in the profile.html.
+     * Call updateAuthenticatesEmail method to update the Authentication token.
      *
      * @param userModifyDto the object with the data from the form.
      * @return call the save method of the user repository with the modify attributes.
@@ -128,6 +132,7 @@ public class UserService {
         if(!userModifyDto.getEmail()
                 .isEmpty()) {
             user.setEmail(userModifyDto.getEmail());
+            updateAuthenticatedEmail(userModifyDto);
         }
         
         return userRepository.save(user);
@@ -239,7 +244,7 @@ public class UserService {
         
         List<User> buddys = authenticatedUser.getBuddys();
         buddys.remove(buddy);
-       return userRepository.save(authenticatedUser);
+        return userRepository.save(authenticatedUser);
     }
     
     /**
@@ -259,5 +264,24 @@ public class UserService {
             throw new RuntimeException("Buddy not found.");
         }
         return buddy;
+    }
+    
+    /**
+     * Method to update the Authentication token when the user modify his email.
+     * Without the session is closed and the user must sign in.
+     *
+     * @param userModifyDto the dto to get the new email.
+     */
+    private void updateAuthenticatedEmail(UserModifyDto userModifyDto) {
+        String password = getTheAuthenticatedUser().getPassword();
+        
+        Collection<SimpleGrantedAuthority> auth =
+                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getAuthorities();
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userModifyDto.getEmail(), password, auth);
+        SecurityContextHolder.getContext()
+                .setAuthentication(authentication);
     }
 }
