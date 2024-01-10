@@ -8,31 +8,31 @@ import com.paymybuddy.repository.TransactionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Optional;
 
 /**
  * Service class for the Transaction object.
+ * Perform all business processing between controllers and the TransactionRepository.
  */
 @Service
 public class TransactionService {
+    
     /**
-     * Call the TransactionRepository.
+     * Call the TransactionRepository to perform CRUDs request to the database.
      */
     private final TransactionRepository transactionsRepository;
     /**
-     * Call the UserService.
+     * Call the UserService to get data from User objects.
      */
     private final UserService userService;
     
     /**
-     * TransactionService constructor.
+     * The class constructor.
      *
-     * @param transactionsRepository to access at the table of transaction of the Database.
+     * @param transactionsRepository to perform CRUDs request to the database.
+     * @param userService            to get data from User objects.
      */
     public TransactionService(TransactionRepository transactionsRepository, UserService userService) {
         this.transactionsRepository = transactionsRepository;
@@ -42,7 +42,7 @@ public class TransactionService {
     /**
      * Call the findAll method of the transaction repository.
      *
-     * @return An iterable of all Transaction object present in the Database's transaction table.
+     * @return An iterable of all Transaction object present in the transactions table.
      */
     public Iterable<Transaction> getAll() {
         return transactionsRepository.findAll();
@@ -51,39 +51,25 @@ public class TransactionService {
     /**
      * Call the findById method of the transaction repository.
      *
-     * @param id id of the Transaction parsed.
-     * @return The Transaction object with the id parsed.
+     * @param id id of the Transaction object parsed.
+     * @return The Transaction found.
      */
     public Optional<Transaction> getBy(Integer id) {
         return transactionsRepository.findById(id);
     }
     
-    
-    /**
-     * Call the save method of the user repository.
-     *
-     * @param transaction the Transaction object parsed to save in the Database/s transaction table.
-     * @return call save method of the transaction repository with the Transaction object parsed.
-     */
-    public Transaction save(Transaction transaction) {
-        return transactionsRepository.save(transaction);
-    }
-    
     /**
      * Method to save a transaction.
+     * Used in the transfer.html to create a new transaction object in the transactions table.
      *
-     * @param principal user authenticated.
-     * @param transactionDto the dto object to get data from the transfer form.
-     * @return call of the transactionsRepository.
+     * @param transactionDto the dto object to get data from the transfer.html form.
+     * @return call of the save transactionsRepository method.
      */
-    public Transaction save(Principal principal, TransactionDto transactionDto) {
+    public Transaction save(TransactionDto transactionDto) {
         
-        Optional<User> optUser = userService.getBy(userService.getPrincipalId(principal));
-        BankAccount bankAccount = new BankAccount();
-        if(optUser.isPresent()) {
-            bankAccount = optUser.get()
-                    .getBankAccount();
-        }
+        BankAccount bankAccount = userService.getTheAuthenticatedUser()
+                .getBankAccount();
+        
         Transaction transaction = new Transaction(transactionDto.getDescription(), transactionDto.getConnection(),
                 transactionDto.getAmount(), bankAccount);
         return transactionsRepository.save(transaction);
@@ -99,40 +85,28 @@ public class TransactionService {
     }
     
     /**
-     * Method to get the las transaction of a bankAccount.
+     * Method to get the last transaction of a bankAccount targeted by id.
      *
      * @param id id of the bankAccount.
-     * @return the transaction.
+     * @return a transaction object.
      */
     public Transaction getLastTransactionByBankAccountId(Integer id) {
         return transactionsRepository.getTheLastTransactionByBankAccountId(id);
     }
     
     /**
-     * Method to get all transactions of a bankAccount in a page format.
+     * Method to get all transactions of the Principal User's bankAccount in a page format.
      *
-     * @param numPage id of the page.
-     * @param sizePage transaction number per page.
+     * @param numPage  id of the page.
+     * @param sizePage the number of transaction per page.
      * @return a Page.
      */
     public Page<Transaction> getTransactionByBankAccountId(int numPage, int sizePage) {
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
-        
-        String name = authentication.getName();
-        
-        Optional<User> optionalUser = userService.getByEmail(name);
-        
-        if(optionalUser.isEmpty()) {
-            throw new RuntimeException("no user find");
-        }
-        
-        Integer bankAccountId = optionalUser.get()
-                .getBankAccount()
-                .getId();
+        User authenticatedUser = userService.getTheAuthenticatedUser();
         
         Pageable pageable = PageRequest.of(numPage, sizePage);
         
-        return transactionsRepository.getPageTransactionsByBankAccountId(bankAccountId, pageable);
+        return transactionsRepository.getPageTransactionsByBankAccountId(authenticatedUser.getBankAccount()
+                .getId(), pageable);
     }
 }

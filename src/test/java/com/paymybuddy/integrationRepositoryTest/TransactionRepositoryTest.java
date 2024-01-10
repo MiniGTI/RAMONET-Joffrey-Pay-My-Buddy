@@ -1,6 +1,7 @@
-package com.paymybuddy.repository;
+package com.paymybuddy.integrationRepositoryTest;
 
 import com.paymybuddy.model.Transaction;
+import com.paymybuddy.repository.TransactionRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

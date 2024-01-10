@@ -1,42 +1,37 @@
 package com.paymybuddy.service;
 
+import com.paymybuddy.dto.BankAccountDto;
 import com.paymybuddy.dto.TransactionDto;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.BankAccountRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.Optional;
 
 /**
  * Service class for the BankAccount object.
+ * Perform all business processing between controllers and the BankAccountRepository.
  */
 @Service
 public class BankAccountService {
     
     /**
-     * Logger class.
-     */
-    private final static Logger logger = LoggerFactory.getLogger(BankAccountService.class);
-    
-    /**
-     * Call the BankAccountRepository.
+     * Call the BankAccountRepository to perform CRUDs request to the database.
      */
     private final BankAccountRepository bankAccountRepository;
     
     /**
-     * Call the UserService.
+     * Call the UserService to get data from User objects.
      */
     private final UserService userService;
     
     /**
-     * BankAccountService constructor.
+     * The class constructor.
      *
-     * @param bankAccountRepository to access at the table of BankAccount of the Database.
+     * @param bankAccountRepository to perform CRUDs request to the database.
+     * @param userService           to get data from User objects.
      */
     public BankAccountService(BankAccountRepository bankAccountRepository, UserService userService) {
         this.bankAccountRepository = bankAccountRepository;
@@ -46,7 +41,7 @@ public class BankAccountService {
     /**
      * Call the findAll method of the bankAccount repository.
      *
-     * @return An iterable of all BankAccount object present in the Database's bankAccount table.
+     * @return An iterable of all BankAccount object present in the bank_account table.
      */
     public Iterable<BankAccount> getAll() {
         return bankAccountRepository.findAll();
@@ -55,8 +50,8 @@ public class BankAccountService {
     /**
      * Call the findById method of the bankAccount repository.
      *
-     * @param id id of the User parsed.
-     * @return The BankAccount object with the id parsed.
+     * @param id id of the BankAccount object parsed.
+     * @return The BankAccount found.
      */
     public Optional<BankAccount> getBy(int id) {
         return bankAccountRepository.findById(id);
@@ -64,6 +59,7 @@ public class BankAccountService {
     
     /**
      * Call the save method of the bankAccount repository.
+     * Used to update bankAccounts in the bank_account table with the new balance after operations.
      *
      * @param bankAccount the new BankAccount object parsed to save.
      * @return call save method of the bankAccount repository.
@@ -83,52 +79,90 @@ public class BankAccountService {
     
     /**
      * Method to perform a transaction.
-     * Debit money form the principal's bankAccount and credit the bankAccount of the connection parsed.
+     * Debit money form the principal's bankAccount and credit the bankAccount of the connection parsed after the fee subtract .
+     * First update the connection's bankAccount balance with the new BigDecimal after addition with the amount after subtract of the fee.
+     * Call feeCollect method to collect the fee into the feeAccount.
+     * And update the Principal user's bankAccount balance with the new BigDecimal after the subtraction with the transactionDto amount attribute.
      *
-     * @param principal user authenticated.
-     * @param transactionDto the dto object to get data from the transfer form.
+     * @param transactionDto the dto object to get data from the transfer.html form.
      */
-    public void transaction(Principal principal, TransactionDto transactionDto) {
-        BankAccount accountToDebit = getPrincipalBankAccount(principal);
-        BigDecimal accountToDebitNewBalance = accountToDebit.getBalance()
-                .subtract(transactionDto.getAmount());
-        bankAccountRepository.transaction(accountToDebitNewBalance, accountToDebit.getId());
+    public void transaction(TransactionDto transactionDto) {
+        BigDecimal amount = transactionDto.getAmount();
+        BigDecimal fee = subtractFivePerCents(amount);
         
         Optional<User> optUserToCredit = userService.getByEmail(transactionDto.getConnection());
-        BankAccount accountToCredit = null;
-        BigDecimal accountToCreditNewBalance = null;
+        
         if(optUserToCredit.isPresent()) {
-            accountToCredit = optUserToCredit.get()
+            BankAccount bankAccountToCredit = optUserToCredit.get()
                     .getBankAccount();
-            accountToCreditNewBalance = accountToCredit.getBalance()
-                    .add(transactionDto.getAmount());
+            bankAccountToCredit.setBalance(bankAccountToCredit.getBalance()
+                    .add(transactionDto.getAmount()
+                            .subtract(fee)));
+            bankAccountRepository.save(bankAccountToCredit);
         } else {
-            logger.error("No user connexion find.");
+            throw new RuntimeException("no user connexion found.");
         }
         
-        bankAccountRepository.transaction(accountToCreditNewBalance, accountToCredit.getId());
+        feeCollect(fee);
+        
+        BankAccount authiticatedBankAccount = userService.getTheAuthenticatedUser()
+                .getBankAccount();
+        
+        authiticatedBankAccount.setBalance(authiticatedBankAccount.getBalance()
+                .subtract(amount));
+        
+        bankAccountRepository.save(authiticatedBankAccount);
     }
     
     /**
-     * Method to perform a deposit on the principal's bankAccount.
+     * Method to update the principal balance after external deposit.
+     * For the moment it's juste a simple decimal input.
+     * Update the Principal user's bankAccount balance with the new BigDecimal after the addition with the input valor.
      *
-     * @param balance The amount to parse.
-     * @param userAccount the account id to deposit money.
+     * @param bankAccountDto dto to parse the amount from the deposit form in the home.html.
      */
-    public void deposit(BigDecimal balance, Integer userAccount) {
-        bankAccountRepository.transaction(balance, userAccount);
+    public void deposit(BankAccountDto bankAccountDto) {
+        
+        BankAccount authenticatedBankAccount = userService.getTheAuthenticatedUser()
+                .getBankAccount();
+        
+        authenticatedBankAccount.setBalance(authenticatedBankAccount.getBalance()
+                .add(bankAccountDto.getAmount()));
+        
+        bankAccountRepository.save(authenticatedBankAccount);
+    }
+    
+    /**
+     * Method to update the principal balance after external retirement.
+     * For the moment it's juste a simple decimal output.
+     * Update the Principal user's bankAccount balance with the new BigDecimal after subtract the input valor.
+     *
+     * @param bankAccountDto dto to parse the amount from the external form in the home.html.
+     */
+    public void external(BankAccountDto bankAccountDto){
+        
+        BankAccount authenticatedBankAccount = userService.getTheAuthenticatedUser()
+                .getBankAccount();
+        
+        authenticatedBankAccount.setBalance(authenticatedBankAccount.getBalance()
+                .subtract(bankAccountDto.getAmount()));
+        
+        bankAccountRepository.save(authenticatedBankAccount);
     }
     
     /**
      * Method to verify if the principal's bankAccount can be pay the amount.
+     * It's use in the transaction operation, in the transferController to make an error before the transaction if false.
+     * A simple subtraction between the bankAccount balance and the transaction amount, and a check if is greater than 0.
      *
-     * @param principal user authenticated.
-     * @param transactionDto the dto object to get data from the transfer form.
-     * @return a boolean.
+     * @param transactionDto the dto object to get the amount from the transfer form.
+     * @return true if greater than 0 and can pay, false if less to 0 and can't pay.
      */
-    public Boolean ableToDeposit(Principal principal, TransactionDto transactionDto) {
+    public Boolean ableToDeposit(TransactionDto transactionDto) {
         
-        BigDecimal balance = getPrincipalBankAccount(principal).getBalance();
+        BigDecimal balance = userService.getTheAuthenticatedUser()
+                .getBankAccount()
+                .getBalance();
         BigDecimal amount = transactionDto.getAmount();
         
         BigDecimal subtract = balance.subtract(amount);
@@ -136,20 +170,32 @@ public class BankAccountService {
     }
     
     /**
-     * Method to get the principal's bankAccount.
+     * Method to subtract five per cent of the transaction.
+     * Get the amount of the transaction, and multiply him per 0.05.
      *
-     * @param principal user authenticated.
-     * @return a bankAccount object.
+     * @param amount the BigDecimal of the transaction.
+     * @return the BigDecimal of the fee valor.
      */
-    private BankAccount getPrincipalBankAccount(Principal principal){
-        
-        Optional<User> optUser = userService.getBy(userService.getPrincipalId(principal));
-        BankAccount bankAccount = new BankAccount();
-        if(optUser.isPresent()) {
-            bankAccount = optUser.get()
-                    .getBankAccount();
+    private BigDecimal subtractFivePerCents(BigDecimal amount) {
+        BigDecimal fee = new BigDecimal("0.05");
+        return amount.multiply(fee);
+    }
+    
+    /**
+     * Method to collect the fee into the feeAccount into the bank_account table.
+     * The feeAccount has id = 999.
+     *
+     * @param amount the BigDecimal of the fee to collect.
+     */
+    private void feeCollect(BigDecimal amount) {
+        Optional<BankAccount> optFeeAccount = bankAccountRepository.findById(999);
+        if(optFeeAccount.isPresent()) {
+            BankAccount feeAccount = optFeeAccount.get();
+            feeAccount.setBalance(feeAccount.getBalance()
+                    .add(amount));
+            bankAccountRepository.save(feeAccount);
+        } else {
+            throw new RuntimeException("Fee account not found.");
         }
-        
-        return bankAccount;
     }
 }

@@ -5,7 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Object instanced by the addBuddy form to add the User object in the buddyList in the Database.
+ * Object to get email from the transfer form.
+ * Used to parse the email of a User to add a Buddy.
  */
 @Data
 @NoArgsConstructor

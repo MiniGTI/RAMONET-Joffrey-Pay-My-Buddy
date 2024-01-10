@@ -1,7 +1,6 @@
 package com.paymybuddy.controller;
 
 import com.paymybuddy.dto.TransactionDto;
-import com.paymybuddy.dtoService.BuddyDtoService;
 import com.paymybuddy.model.Transaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.BankAccountService;
@@ -12,48 +11,52 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Controller class for the transfer.html.
+ * Page to transfer money from the Principal User to a User from his buddyList.
+ * Page to see history of the Principal User's BankAccount transactions.
+ * Page to access to the addBuddy form.
+ * Required an authentication, if no remember-me token present, redirect to the login page.
  */
 @Controller
 @RequestMapping("/transfer")
 public class TransferController {
+    
     /**
-     * Call the BuddyDtoService.
-     */
-    private final BuddyDtoService buddyDtoService;
-    /**
-     * Call the TransactionService.
+     * Call the TransactionService to get data from Transaction objects.
      */
     private final TransactionService transactionService;
-
+    
     /**
-     * Call the BankAccountService.
+     * Call the BankAccountService to get data from BankAccount objects.
      */
     private final BankAccountService bankAccountService;
     
+    /**
+     * Call the UserService to get data from User objects.
+     */
     private final UserService userService;
     
     /**
-     * TransferController constructor.
+     * The class constructor.
      *
-     * @param buddyDtoService    to access at the buddyDto service class.
      * @param transactionService to access at the transaction service class.
      * @param bankAccountService to access at the bankAccount service class.
+     * @param userService        to get data from User objects.
      */
-    public TransferController(BuddyDtoService buddyDtoService, TransactionService transactionService, BankAccountService bankAccountService,
+    public TransferController(TransactionService transactionService, BankAccountService bankAccountService,
                               UserService userService) {
-        this.buddyDtoService = buddyDtoService;
         this.transactionService = transactionService;
         this.bankAccountService = bankAccountService;
         this.userService = userService;
     }
     
     /**
-     * transactionDto model for the form.
+     * TransactionDto model for the transfer form.
+     * To parse data to perform a transaction.
      *
      * @return new TransactionDto.
      */
@@ -63,22 +66,23 @@ public class TransferController {
     }
     
     /**
-     * To get DATAs for the transaction history.
+     * Url to access at the transfer.html.
+     * To parse DATAs to the transaction history.
+     * Call getAllBuddy UserService method to get the Principal User's buddyList.
+     * Call getTransactionsByBankAccountId TransactionService method to get all Principal User's BankAccount transactions by page of 3 buddy.
      *
-     * @param principal user authenticated.
      * @param model to parse data to the view.
-     * @param page number of the page.
+     * @param page  number of the page.
      * @return transfer.html.
      */
     @GetMapping
-    public String transfer(Principal principal, Model model,
+    public String transfer(Model model,
                            @RequestParam(defaultValue = "0") Integer page) {
-        Integer pageSize = 3;
-     
-        List<User> buddyList = userService.getAllBuddyId();
+        int pageSize = 3;
         
-        Page<Transaction> transactionsPage =
-                transactionService.getTransactionByBankAccountId(page, pageSize);
+        List<User> buddyList = userService.getAllBuddy();
+        
+        Page<Transaction> transactionsPage = transactionService.getTransactionByBankAccountId(page, pageSize);
         
         List<Transaction> transactions = transactionsPage.getContent();
         
@@ -91,22 +95,33 @@ public class TransferController {
     }
     
     /**
-     * To get the data from the form to perform a money transfer.
+     * To parse data from the transfer form to perform a money transfer.
+     * Call ableToDeposit BankAccountService method to check if the Principal User's BankAccount is solvent.
+     * Call save TransactionService method to save a new transaction linked to the Principal User's bankAccount.
+     * Call transaction BankAccountService method to apply balance modify to the Principal User's BankAccount and the buddy's BankAccount.
      *
-     * @param principal user authenticated.
-     * @param transactionDto the dto object to parse data from the form to the services.
-     * @return transfer.html with success param.
+     * @param transactionDto the transactionDto create from the form to the services.
+     * @return transfer.html
+     * param errorBalance if the Principal User's BankAccount isn't solvent.
+     * param error0Balance if the amount input is equals to 0.
+     * param success if the transfer is successful.
      */
     @PostMapping
-    public String connexion(Principal principal,
-                            @ModelAttribute("transactionDto") TransactionDto transactionDto) {
+    public String connexion(
+            @ModelAttribute("transactionDto") TransactionDto transactionDto) {
         
-        if(!bankAccountService.ableToDeposit(principal, transactionDto)) {
+        if(!bankAccountService.ableToDeposit(transactionDto)) {
             return "redirect:/transfer?errorBalance";
-        } else {
-            transactionService.save(principal, transactionDto);
-            bankAccountService.transaction(principal, transactionDto);
         }
+        
+        if(transactionDto.getAmount()
+                .compareTo(BigDecimal.ZERO) <= 0) {
+            return "redirect:/transfer?error0Balance";
+        }
+        
+        transactionService.save(transactionDto);
+        bankAccountService.transaction(transactionDto);
+        
         return "redirect:/transfer?success";
     }
 }

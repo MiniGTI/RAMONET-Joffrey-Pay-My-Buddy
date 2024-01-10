@@ -2,9 +2,8 @@ package com.paymybuddy.controller;
 
 
 import com.paymybuddy.dto.BankAccountDto;
-import com.paymybuddy.dtoService.BankAccountDtoService;
-import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.Transaction;
+import com.paymybuddy.model.User;
 import com.paymybuddy.service.BankAccountService;
 import com.paymybuddy.service.TransactionService;
 import com.paymybuddy.service.UserService;
@@ -16,44 +15,42 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.math.BigDecimal;
-import java.security.Principal;
-import java.util.Optional;
 
 
 /**
  * Controller class for the home.html.
+ * This is the home page.
+ * Page to view the last Principal User's transaction.
+ * Page how the Principal user can deposit money from an external account.
+ * Page to see the Principal's User IBAN, SWIFT and BankAccount balance.
+ * Required an authentication, if no remember-me token present, redirect to the login page.
  */
 @Controller
 @RequestMapping("/")
 public class HomeController {
+    
     /**
-     * Call the BankAccountDtoService.
-     */
-    private final BankAccountDtoService bankAccountDtoService;
-    /**
-     * Call the BankAccountService.
+     * Call the BankAccountService to get data from BankAccount objects.
      */
     private final BankAccountService bankAccountService;
     /**
-     * Call the UserService.
+     * Call the UserService to get data from User objects.
      */
     private final UserService userService;
     /**
-     * Call the TransactionService.
+     * Call the TransactionService to get data from Transaction objects.
      */
     private final TransactionService transactionService;
     
     /**
-     * HomeController constructor.
+     * The class constructor.
      *
-     * @param bankAccountDtoService to access at the bankAccountDto service class.
-     * @param bankAccountService to access at the bankAccount service class.
-     * @param userService to access at the user service class.
-     * @param transactionService to access at the transaction service class.
+     * @param bankAccountService to get data from BankAccount objects.
+     * @param userService        to get data from User objects.
+     * @param transactionService to get data from Transaction objects.
      */
-    public HomeController(BankAccountDtoService bankAccountDtoService, BankAccountService bankAccountService,
-                          UserService userService, TransactionService transactionService) {
-        this.bankAccountDtoService = bankAccountDtoService;
+    public HomeController(BankAccountService bankAccountService, UserService userService,
+                          TransactionService transactionService) {
         this.bankAccountService = bankAccountService;
         this.userService = userService;
         this.transactionService = transactionService;
@@ -61,6 +58,7 @@ public class HomeController {
     
     /**
      * BankAccountDto model for the form.
+     * To add money to the Principal User's bankAccount.
      *
      * @return new BankAccountDto.
      */
@@ -71,34 +69,29 @@ public class HomeController {
     
     /**
      * To get data for all model of the Home page.
-     *      - row last Transaction.
-     *      - IBAN , SWIFT, BALANCE
+     * - The last transaction of the Principal User.
+     * - IBAN , SWIFT, BALANCE of the Principal User's bankAccount.
+     * Call getTheAuthenticatedUser UserService to get the Principal User.
+     * Call the getLastTransactionByBankAccountId TransactionService to get the last Principal User transaction.
      *
-     * @param principal user authenticated.
      * @param model to parse data to the view.
      * @return home.html.
      */
     @GetMapping
-    public String accountField(Principal principal, Model model) {
-        String iban = null;
-        String swift = null;
-        BigDecimal balance = null;
-        Integer accountId = null;
+    public String accountField(Model model) {
         
-        Integer principalId = userService.getPrincipalId(principal);
-        Optional<BankAccount> optAccount = bankAccountService.getBy(principalId);
+        User authenticatedUser = userService.getTheAuthenticatedUser();
         
-        if(optAccount.isPresent()) {
-            iban = optAccount.get()
-                    .getIban();
-            swift = optAccount.get()
-                    .getSwift();
-            balance = optAccount.get()
-                    .getBalance();
-            accountId = optAccount.get().getId();
-        }
-        Transaction transaction =
-                transactionService.getLastTransactionByBankAccountId(accountId);
+        String iban = authenticatedUser.getBankAccount()
+                .getIban();
+        String swift = authenticatedUser.getBankAccount()
+                .getSwift();
+        BigDecimal balance = authenticatedUser.getBankAccount()
+                .getBalance();
+        
+        Transaction transaction = transactionService.getLastTransactionByBankAccountId(
+                authenticatedUser.getBankAccount()
+                        .getId());
         
         model.addAttribute("iban", iban);
         model.addAttribute("swift", swift);
@@ -109,16 +102,31 @@ public class HomeController {
     
     /**
      * To get the deposit amount.
+     * Call the deposit bankAccountService method to update the Principal User's bankAccount balance with the money add.
      *
      * @param bankAccountDto The dto to parse the amount value.
-     * @param principal user authenticated.
      * @return home.html.
      */
     @PostMapping
     public String deposite(
-            @ModelAttribute("bankAccountDto") BankAccountDto bankAccountDto, Principal principal) {
+            @ModelAttribute("bankAccountDto") BankAccountDto bankAccountDto) {
         
-        bankAccountDtoService.deposit(principal, bankAccountDto);
+        bankAccountService.deposit(bankAccountDto);
+        return "redirect:/";
+    }
+    
+    /**
+     * To get the out amount.
+     * Call the external bankAccountService method to update the Principal User's bankAccount balance with the money out.
+     *
+     * @param bankAccountDto The dto to parse the amount value.
+     * @return home.html.
+     */
+    @PostMapping("/out")
+    public String external(
+            @ModelAttribute("bankAccountDto") BankAccountDto bankAccountDto) {
+        
+        bankAccountService.external(bankAccountDto);
         return "redirect:/";
     }
 }

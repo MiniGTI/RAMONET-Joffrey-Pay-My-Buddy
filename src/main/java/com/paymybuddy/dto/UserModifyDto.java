@@ -1,10 +1,16 @@
 package com.paymybuddy.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
- * Object instanced by the profile form to update a User's firstname, lastname, email field in the user table in the Database.
+ * Object to get the data input from the profileModify form.
+ * Used to parse data to update the Principal User's firstname, lastname and/or email attribute.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserModifyDto {
 
 private String firstName;

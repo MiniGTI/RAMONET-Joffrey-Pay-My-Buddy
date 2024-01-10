@@ -1,7 +1,7 @@
 package com.paymybuddy.controller;
 
 import com.paymybuddy.dto.UserDto;
-import com.paymybuddy.dtoService.UserDtoService;
+import com.paymybuddy.util.InputChecker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class RegisterControllerTest {
     private RegisterController registerController;
     
     @MockBean
-    private UserDtoService userDtoService;
+    private InputChecker inputChecker;
     
     private final UserDto userDto = new UserDto();
     
@@ -35,27 +35,10 @@ public class RegisterControllerTest {
                 .andExpect(status().isOk());
     }
     
-    @Test
-    void shouldReturnRegisterWithErrorEmailParamPageTest() throws Exception {
-        mvc.perform(get("/register?errorEmail"))
-                .andExpect(status().isOk());
-    }
     
     @Test
-    void shouldReturnRegisterWithErrorPasswordParamPageTest() throws Exception {
-        mvc.perform(get("/register?errorPassword"))
-                .andExpect(status().isOk());
-    }
-    
-    @Test
-    void shouldReturnRegisterSuccessPageTest() throws Exception {
-        mvc.perform(get("/registerSuccess"))
-                .andExpect(status().isOk());
-    }
-    
-    @Test
-    void shouldReturnRegisterErrorEmailIfEmailCheckIsFalse() {
-        when(userDtoService.emailCheck("", "")).thenReturn(false);
+    void shouldReturnRegisterErrorEmailWhenEmailCheckIsFalse() {
+        when(inputChecker.sameInputCheck("1", "2")).thenReturn(false);
         
         String result = registerController.registrationUser(userDto);
         String expectedResult = "redirect:/register?errorEmail";
@@ -64,10 +47,11 @@ public class RegisterControllerTest {
     }
     
     @Test
-    void shouldReturnRegisterErrorPasswordIfPasswordCheckIdFalse() {
-        UserDto userDto = new UserDto("a", "a", "b", "c", "f", "l", "USER");
-        when(userDtoService.emailCheck(userDto.getEmail(), userDto.getEmailCheck())).thenReturn(true);
-        when(userDtoService.passwordCheck(userDto.getPassword(), userDto.getPasswordCheck())).thenReturn(false);
+    void shouldReturnRegisterErrorPasswordWhenPasswordCheckIdFalse() {
+        UserDto userDto = new UserDto("test@test.com", "test@test.com", "test", "testtest", "firstname", "lastname");
+        
+        when(inputChecker.sameInputCheck(userDto.getEmail(), userDto.getEmailCheck())).thenReturn(true);
+        when(inputChecker.sameInputCheck(userDto.getPassword(), userDto.getPasswordCheck())).thenReturn(false);
         
         String result = registerController.registrationUser(userDto);
         String expectedResult = "redirect:/register?errorPassword";
@@ -77,9 +61,10 @@ public class RegisterControllerTest {
     
     @Test
     void shouldReturnRegisterSuccessIfUserDtoInputIsRight() {
-        UserDto userDto = new UserDto("a", "a", "b", "b", "f", "l", "USER");
-        when(userDtoService.emailCheck(userDto.getEmail(), userDto.getEmailCheck())).thenReturn(true);
-        when(userDtoService.passwordCheck(userDto.getPassword(), userDto.getPasswordCheck())).thenReturn(true);
+        UserDto userDto = new UserDto("test@test.com", "test@test.com", "test", "test", "firstname", "lastname");
+        
+        when(inputChecker.sameInputCheck(userDto.getEmail(), userDto.getEmailCheck())).thenReturn(true);
+        when(inputChecker.sameInputCheck(userDto.getPassword(), userDto.getPasswordCheck())).thenReturn(true);
         
         String result = registerController.registrationUser(userDto);
         String expectedResult = "redirect:/registerSuccess";
