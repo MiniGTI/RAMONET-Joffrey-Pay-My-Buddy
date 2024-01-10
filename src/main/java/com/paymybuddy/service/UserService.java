@@ -7,8 +7,6 @@ import com.paymybuddy.dto.UserModifyDto;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,33 +15,31 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Service class for the User object.
+ * Perform all business processing between controllers and the UserRepository.
  */
 @Service
 public class UserService {
     
-    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
     /**
-     * Call BCryptPasswordEncoder.class to encode password.
+     * Call BCryptPasswordEncoder to encode password.
      */
     private final BCryptPasswordEncoder passwordEncoder;
     
     /**
-     * Call the UserRepository.
+     * Call the UserRepository to perform CRUDs request to the database.
      */
     private final UserRepository userRepository;
     
     /**
-     * UserService constructor.
+     * The call constructor.
      *
-     * @param userRepository  to access at the table of user of the Database.
-     * @param passwordEncoder to encode the password
+     * @param userRepository  to perform CRUDs request to the database.
+     * @param passwordEncoder to encode the password.
      */
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -53,7 +49,7 @@ public class UserService {
     /**
      * Call the findAll method of the user repository.
      *
-     * @return An iterable of all User object present in the Database's user table.
+     * @return An iterable of all User object present in the user table.
      */
     public Iterable<User> getAll() {
         return userRepository.findAll();
@@ -62,8 +58,8 @@ public class UserService {
     /**
      * Call the findById method of the user repository.
      *
-     * @param id id of the User parsed.
-     * @return The User object with the id parsed.
+     * @param id id of the User object parsed.
+     * @return The User found.
      */
     public Optional<User> getBy(Integer id) {
         return userRepository.findById(id);
@@ -73,7 +69,7 @@ public class UserService {
      * Call the findByEmail method of the user repository.
      *
      * @param email email of the User parsed.
-     * @return The User object with the email parsed.
+     * @return The User found.
      */
     public Optional<User> getByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -81,22 +77,23 @@ public class UserService {
     
     /**
      * Call the deleteBy method of the user repository.
-     *
-     * @param id id of the User parsed.
+     * Used to delete the account on the profile.html.
      */
-    public void deleteBy(Integer id) {
-        userRepository.deleteById(id);
+    public void deleteBy() {
+        User authenticatedUser = getTheAuthenticatedUser();
+        userRepository.deleteById(authenticatedUser.getId());
     }
     
     /**
      * Call the save method of the user repository.
+     * Used by the register.html form.
      *
      * @param userDto the UserDto created with the register form.
-     * @return call save method of the user repository with attributes of the UserDto parsed.
+     * @return call the save method of the user repository with attributes of the UserDto parsed.
      * Set the user's email, firstname, lastname of the UserDto parsed
      * Set the user's password of the UserDto parsed after encoded by the BCryptPasswordEncoder.
      * Set the user's role to USER.
-     * Create a BankAccount and give his id to this user.
+     * Create a BankAccount object and give his id to the bankAccount attribute of this new user.
      */
     public User save(UserDto userDto) {
         User user = new User();
@@ -111,10 +108,10 @@ public class UserService {
     }
     
     /**
-     * Method to update the principal's firstname, lastname, email with the userModifyDto parsed.
+     * Method to update the principal's firstname, lastname or/and email with the UserModifyDto object parsed from the profileModify form in the profile.html.
      *
      * @param userModifyDto the object with the data from the form.
-     * @return user.
+     * @return call the save method of the user repository with the modify attributes.
      */
     
     public User save(UserModifyDto userModifyDto) {
@@ -132,15 +129,15 @@ public class UserService {
                 .isEmpty()) {
             user.setEmail(userModifyDto.getEmail());
         }
-        System.out.println(userModifyDto);
+        
         return userRepository.save(user);
     }
     
     /**
-     * Method to update the principal's password with the passwordDto parsed .
+     * Method to update the principal's password with the PasswordDto object parsed from the passwordModify form in profile.html.
      *
      * @param passwordDto the object with the data from the form.
-     * @return user.
+     * @return call the save method of the user repository with the new password attribute.
      */
     public User save(PasswordDto passwordDto) {
         User user = getTheAuthenticatedUser();
@@ -148,45 +145,36 @@ public class UserService {
         if(!passwordDto.getNewPassword()
                 .isEmpty()) {
             user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
+        } else {
+            throw new RuntimeException("New password not found");
         }
         return userRepository.save(user);
     }
     
-    public User saveNewBuddy(BuddyDto buddyDto){
+    /**
+     * Method to save a new buddy relation with the BuddyDto object parsed from the addNewBuddy form of addBuddy.html.
+     *
+     * @param buddyDto the object with the data from the form.
+     */
+    public User saveNewBuddy(BuddyDto buddyDto) {
         
         User authenticatedUser = getTheAuthenticatedUser();
         User buddy = getUserByBuddyDto(buddyDto);
         
-        Set<User> buddys = authenticatedUser.getBuddys();
+        List<User> buddys = authenticatedUser.getBuddys();
         buddys.add(buddy);
         authenticatedUser.setBuddys(buddys);
-        
         return userRepository.save(authenticatedUser);
     }
     
+    
     /**
-     * Method to check if the email input exist in the User Database.
+     * Method to get the User object of the Principal.
+     * Get the Optional<User> and check if is not empty.
      *
-     * @return A Boolean.
+     * @return the User object.
      */
-    public Boolean buddyEmailExistCheck(BuddyDto buddyDto) {
-        
-        Optional<User> optUserFind = getByEmail(buddyDto.getEmail());
-        
-        return optUserFind.isPresent();
-    }
-    
-    public Boolean buddyRelationAlreadyExist(BuddyDto buddyDto){
-        
-        User authenticatedUser = getTheAuthenticatedUser();
-        User buddy = getUserByBuddyDto(buddyDto);
-        
-        Set<User> buddys = authenticatedUser.getBuddys();
-        
-        return buddys.contains(buddy);
-    }
-    
-    public User getTheAuthenticatedUser(){
+    public User getTheAuthenticatedUser() {
         User user = null;
         
         Authentication authentication = SecurityContextHolder.getContext()
@@ -196,79 +184,71 @@ public class UserService {
         
         Optional<User> optUser = getByEmail(name);
         
-        if(optUser.isPresent()){
+        if(optUser.isPresent()) {
             user = optUser.get();
         } else {
             throw new RuntimeException("Problem to get the Principal.");
         }
         return user;
     }
-
-    /**
-     * Method to get the Id of the principal
-     *
-     * @param principal User authenticated.
-     * @return An Integer, the id of the principal.
-     */
-    public Integer getPrincipalId(Principal principal) {
-        Integer userId = null;
-        Optional<User> optUser = userRepository.findByEmail(principal.getName());
-        
-        if(optUser.isPresent()) {
-            userId = optUser.get()
-                    .getId();
-        } else {
-            logger.error("No principal find.");
-        }
-        
-        return userId;
-    }
     
     /**
-     * Method to get a buddy's id into a list of user's buddys.
+     * Method to get the buddy list of the Principal User.
      *
-     * @return a list of Integer.
+     * @return a list of User object.
      */
-    public List<User> getAllBuddyId() {
+    public List<User> getAllBuddy() {
         User authenticatedUser = getTheAuthenticatedUser();
-        return authenticatedUser.getBuddys().stream().toList();
+        return authenticatedUser.getBuddys()
+                .stream()
+                .toList();
     }
     
+    /**
+     * Method to get all buddys of the Principal User in a page format.
+     *
+     * @param numPage  id of the page.
+     * @param sizePage the number of User per page.
+     * @return a Page.
+     */
     public Page<User> getPageBuddyById(int numPage, int sizePage) {
         
-
-        User authenticatedUser = getTheAuthenticatedUser();
-        
-        Integer userId = authenticatedUser
-                .getId();
+        Integer userId = getTheAuthenticatedUser().getId();
         
         Pageable pageable = PageRequest.of(numPage, sizePage);
         
         return userRepository.getPageBuddyById(userId, pageable);
     }
     
-    
     /**
      * Method to delete the buddy relation.
      *
-      * @param id The id of the buddy.
+     * @param id The id of the buddy.
      */
-    public void deleteBuddy(Integer id) {
+    public User deleteBuddy(Integer id) {
         User authenticatedUser = getTheAuthenticatedUser();
         
         Optional<User> optBuddy = getBy(id);
         User buddy = null;
         
-        if(optBuddy.isPresent()){
+        if(optBuddy.isPresent()) {
             buddy = optBuddy.get();
+        } else {
+            throw new RuntimeException("Buddy not found.");
         }
         
-        Set<User> buddys = authenticatedUser.getBuddys();
+        List<User> buddys = authenticatedUser.getBuddys();
         buddys.remove(buddy);
-        userRepository.save(authenticatedUser);
+       return userRepository.save(authenticatedUser);
     }
     
-    private User getUserByBuddyDto(BuddyDto buddyDto){
+    /**
+     * Method to get a User object from a BuddyDto object parsed from the addNewBuddy form of addBuddy.html.
+     *
+     * @param buddyDto the object with the data from the form.
+     * @return A User object.
+     */
+    public User getUserByBuddyDto(BuddyDto buddyDto) {
         
         User buddy = null;
         Optional<User> optBuddy = getByEmail(buddyDto.getEmail());
@@ -280,5 +260,4 @@ public class UserService {
         }
         return buddy;
     }
-    
 }

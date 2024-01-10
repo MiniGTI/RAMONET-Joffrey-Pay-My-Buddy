@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Controller class for the Login.html.
+ * Page to authenticate User with email and password.
+ * Page to access at the register.html to register a new User.
  */
 @Controller
 @RequestMapping("/login")

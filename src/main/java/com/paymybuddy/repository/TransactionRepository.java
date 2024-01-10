@@ -10,22 +10,23 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Crud repository interface for the Transaction model.
+ * Perform requests with the transactions table.
  */
 @Repository
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
     
     /**
-     * Query to get all transactions of a bankAccount with id page format.
+     * Query to get all transactions of a bankAccount with the bankAccount's id in a page format.
      *
      * @param id id of the bankAccount.
      * @param pageable the format parsed.
-     * @return A page of transaction object.
+     * @return pages of transaction object.
      */
     @Query(value = "SELECT * FROM transactions WHERE bank_account_id = :id", nativeQuery = true)
     Page<Transaction> getPageTransactionsByBankAccountId(@Param("id") Integer id, Pageable pageable);
     
     /**
-     * Query to get the last transaction of a bankAccount with id.
+     * Query to get the last transaction of a bankAccount with the bankAccount's id.
      *
      * @param id id of the bankAccount.
      * @return a transaction object.

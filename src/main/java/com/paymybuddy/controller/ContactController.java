@@ -1,6 +1,5 @@
 package com.paymybuddy.controller;
 
-import com.paymybuddy.dtoService.BuddyDtoService;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.UserService;
 import org.springframework.data.domain.Page;
@@ -15,36 +14,41 @@ import java.util.List;
 
 /**
  * Controller class for the contact.html.
+ * Page to add a new relation between two User.
+ * Page to view the Principal User's buddyList.
+ * Required an authentication, if no remember-me token present, redirect to the login page.
  */
 @Controller
 @RequestMapping("/contact")
 public class ContactController {
     
     /**
-     * Call BuddyDtoService.
+     * Call the UserService to get data from User objects.
      */
-    private final BuddyDtoService buddyDtoService;
     private final UserService userService;
     
     /**
-     * ContactController constructor.
+     * The class constructor.
+     *
+     * @param userService to get data from User objects.
      */
-    public ContactController(BuddyDtoService buddyDtoService, UserService userService) {
-        this.buddyDtoService = buddyDtoService;
+    public ContactController(UserService userService) {
         this.userService = userService;
     }
     
     /**
-     * Add the BuddyList of the authenticated User.
+     * Add the Principal User's BuddyList into a Page format.
+     * The pageSize manage the number of buddy per page.
+     * Call the getPageBuddyById UserService to get the buddyList by page of 3 buddy.
      *
-     * @param model     to parse the buddyList data to the view.
-     * @param page      the configuration of the pagination.
+     * @param model to parse the buddyList data to the view.
+     * @param page  the pagination configuration.
      * @return contact.html
      */
     @GetMapping()
     public String buddyList(Model model,
                             @RequestParam(defaultValue = "0") Integer page) {
-        Integer pageSize = 3;
+        int pageSize = 3;
         
         Page<User> buddyPage = userService.getPageBuddyById(page, pageSize);
         
@@ -60,12 +64,14 @@ public class ContactController {
     /**
      * The delete button.
      * To delete the buddy relation linked.
+     * Call the deleteBuddy UserService to remove the Buddy in the Principal User buddyList attribute.
      *
-     * @param buddyId   id of the buddy.
+     * @param buddyId id of the buddy.
      * @return contact.html.
      */
     @PostMapping()
-    public String deleteBuddy(@RequestParam Integer buddyId) {
+    public String deleteBuddy(
+            @RequestParam Integer buddyId) {
         userService.deleteBuddy(buddyId);
         return "redirect:/contact";
     }

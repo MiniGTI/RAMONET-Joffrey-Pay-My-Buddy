@@ -8,15 +8,18 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * Object to get data from the form of the transfer page.
+ * Object to get the data input from the transaction form.
+ * Used to parse data to perform and create a new transaction.
+ * Used to parse data to update BankAccount's balance attribute.
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class TransactionDto {
     
     private String connection;
     private BigDecimal amount;
     private String description;
     private BankAccount bankAccount;
+    
 }

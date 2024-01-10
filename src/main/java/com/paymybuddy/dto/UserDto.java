@@ -5,7 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Object instanced by the register form to create the User object for saving in the Database.
+ * Object to get the data input from the register form.
+ * Used to parse data to register and create a new User.
  */
 @Data
 @AllArgsConstructor
@@ -17,5 +18,4 @@ public class UserDto {
     private String passwordCheck;
     private String firstname;
     private String lastname;
-    private String role;
 }

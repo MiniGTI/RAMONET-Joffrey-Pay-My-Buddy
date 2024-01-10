@@ -95,8 +95,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/com/paymybuddy/model/**</exclude>
-                        <exclude>**/com/paymybuddy/dto/UserDto.class</exclude>
-                        <exclude>**/com/paymybuddy/dto/BuddyDto.class</exclude>
+                        <exclude>**/com/paymybuddy/dto/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -114,8 +113,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/com/paymybuddy/model/**</exclude>
-                                <exclude>**/com/paymybuddy/dto/UserDto.class</exclude>
-                                <exclude>**/com/paymybuddy/dto/BuddyDto.class</exclude>
+                                <exclude>**/com/paymybuddy/dto/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
