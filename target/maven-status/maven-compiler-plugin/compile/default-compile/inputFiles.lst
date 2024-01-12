@@ -1,6 +1,5 @@
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/dto/BuddyDto.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/dto/UserDto.java
-/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/util/InputChecker.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/repository/UserRepository.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/dto/BankAccountDto.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/dto/TransactionDto.java
@@ -24,4 +23,5 @@
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/dto/PasswordDto.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/model/User.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/model/Transaction.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/service/validatorService/InputChecker.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/service/BankAccountService.java

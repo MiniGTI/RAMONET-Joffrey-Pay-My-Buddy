@@ -7,17 +7,16 @@ import com.paymybuddy.dto.UserModifyDto;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +26,11 @@ import java.util.Optional;
  */
 @Service
 public class UserService {
+    
+    /**
+     * Call of SLF4J.
+     */
+    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
     
     /**
      * Call BCryptPasswordEncoder to encode password.
@@ -98,6 +102,7 @@ public class UserService {
      * Set the user's role to USER.
      * Create a BankAccount object and give his id to the bankAccount attribute of this new user.
      */
+    
     public User save(UserDto userDto) {
         User user = new User();
         user.setEmail(userDto.getEmail());
@@ -106,7 +111,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRole("USER");
         user.setBankAccount(new BankAccount());
-        
+        logger.debug("userDto: " + userDto.getEmail() + " - " + userDto.getFirstname() + " - " + userDto.getLastname() +
+                " - " + userDto.getPassword());
         return userRepository.save(user);
     }
     
@@ -132,9 +138,9 @@ public class UserService {
         if(!userModifyDto.getEmail()
                 .isEmpty()) {
             user.setEmail(userModifyDto.getEmail());
-            updateAuthenticatedEmail(userModifyDto);
         }
-        
+        logger.debug("userModifyDto: " + userModifyDto.getFirstName() + " - " + userModifyDto.getLastname() + " - " +
+                userModifyDto.getEmail());
         return userRepository.save(user);
     }
     
@@ -146,7 +152,7 @@ public class UserService {
      */
     public User save(PasswordDto passwordDto) {
         User user = getTheAuthenticatedUser();
-        
+        logger.debug("passwordDto: " + passwordDto.getNewPassword());
         if(!passwordDto.getNewPassword()
                 .isEmpty()) {
             user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
@@ -162,13 +168,15 @@ public class UserService {
      * @param buddyDto the object with the data from the form.
      */
     public User saveNewBuddy(BuddyDto buddyDto) {
-        
+        logger.debug("buddyDto: " + buddyDto.getEmail());
         User authenticatedUser = getTheAuthenticatedUser();
         User buddy = getUserByBuddyDto(buddyDto);
         
         List<User> buddys = authenticatedUser.getBuddys();
+        logger.debug("buddyList before add: " + buddys.size());
         buddys.add(buddy);
         authenticatedUser.setBuddys(buddys);
+        logger.debug("buddyList after add: " + buddys.size());
         return userRepository.save(authenticatedUser);
     }
     
@@ -186,11 +194,12 @@ public class UserService {
                 .getAuthentication();
         
         String name = authentication.getName();
-        
+        logger.debug("Authentication: " + name);
         Optional<User> optUser = getByEmail(name);
         
         if(optUser.isPresent()) {
             user = optUser.get();
+            logger.debug("Principal: " + user.getEmail() + " - " + user.getPassword() + " - " + user.getRole());
         } else {
             throw new RuntimeException("Problem to get the Principal.");
         }
@@ -254,7 +263,7 @@ public class UserService {
      * @return A User object.
      */
     public User getUserByBuddyDto(BuddyDto buddyDto) {
-        
+        logger.debug("buddyDto: " + buddyDto.getEmail());
         User buddy = null;
         Optional<User> optBuddy = getByEmail(buddyDto.getEmail());
         
@@ -264,24 +273,5 @@ public class UserService {
             throw new RuntimeException("Buddy not found.");
         }
         return buddy;
-    }
-    
-    /**
-     * Method to update the Authentication token when the user modify his email.
-     * Without the session is closed and the user must sign in.
-     *
-     * @param userModifyDto the dto to get the new email.
-     */
-    private void updateAuthenticatedEmail(UserModifyDto userModifyDto) {
-        String password = getTheAuthenticatedUser().getPassword();
-        
-        Collection<SimpleGrantedAuthority> auth =
-                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext()
-                        .getAuthentication()
-                        .getAuthorities();
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(userModifyDto.getEmail(), password, auth);
-        SecurityContextHolder.getContext()
-                .setAuthentication(authentication);
     }
 }

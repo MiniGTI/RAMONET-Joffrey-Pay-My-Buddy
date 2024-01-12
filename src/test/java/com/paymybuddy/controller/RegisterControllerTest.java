@@ -4,7 +4,7 @@ import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.UserService;
-import com.paymybuddy.util.InputChecker;
+import com.paymybuddy.service.validatorService.InputChecker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.paymybuddy.controller;
 
 import com.paymybuddy.dto.BuddyDto;
 import com.paymybuddy.service.UserService;
-import com.paymybuddy.util.InputChecker;
+import com.paymybuddy.service.validatorService.InputChecker;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
