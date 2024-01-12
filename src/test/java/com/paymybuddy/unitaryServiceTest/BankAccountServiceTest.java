@@ -87,7 +87,7 @@ public class BankAccountServiceTest {
         
         Assertions.assertDoesNotThrow(() -> bankAccountService.deleteBy(1));
     }
-
+    
     @Test
     void shouldDepositWithBankAccountDtoTest() {
         BankAccountDto bankAccountDto = new BankAccountDto(new BigDecimal("50.00"));
@@ -119,7 +119,7 @@ public class BankAccountServiceTest {
     }
     
     @Test
-    void shouldAbleToDepositWithTransactionDtoWhenBankAccountBalanceIsLessThanTheAmount() {
+    void shouldAbleToDepositWithTransactionDtoWhenBankAccountBalanceIsLessThanTheAmountTest() {
         TransactionDto transactionDto =
                 new TransactionDto("user2test@email.com", new BigDecimal("5000.00"), "First transaction", BANKACCOUNT);
         
@@ -131,7 +131,7 @@ public class BankAccountServiceTest {
     }
     
     @Test
-    void shouldAbleToDepositWithTransactionDtoWhenBankAccountBalanceIsMoreThanTheAmount() {
+    void shouldAbleToDepositWithTransactionDtoWhenBankAccountBalanceIsMoreThanTheAmountTest() {
         TransactionDto transactionDto =
                 new TransactionDto("user2test@email.com", new BigDecimal("50.00"), "First transaction", BANKACCOUNT);
         
@@ -140,5 +140,48 @@ public class BankAccountServiceTest {
         Boolean result = bankAccountService.ableToDeposit(transactionDto);
         
         Assertions.assertTrue(result);
+    }
+    
+    @Test
+    void shouldPerformTransactionWhenTheBuddyBankAccountIsNotFoundTest() {
+        TransactionDto transactionDto =
+                new TransactionDto("wrong@email.com", new BigDecimal("50.00"), "First transaction", BANKACCOUNT);
+        
+        when(userService.getByEmail(transactionDto.getConnection())).thenReturn(Optional.empty());
+        
+        RuntimeException runtimeException =
+                Assertions.assertThrows(RuntimeException.class, () -> bankAccountService.transaction(transactionDto));
+        
+        Assertions.assertEquals("no user connexion found.", runtimeException.getMessage());
+    }
+    
+    @Test
+    void shouldPerformTransactionWhenAllIsRightTest() {
+        TransactionDto transactionDto =
+                new TransactionDto("user2test@email.com", new BigDecimal("50.00"), "First transaction", BANKACCOUNT);
+        BankAccount updatedCreditAccount =
+                new BankAccount(2, new BigDecimal("1050.00"), "301dcceb-49d9-47da-92cc-c386f88dfe4a",
+                        "fc3e7eb7-4390-465d-8c54-2fcc65315d7a", new ArrayList<>());
+        BankAccount updatedDebitAccount =
+                new BankAccount(1, new BigDecimal("1447.50"), "67acb3ed-6d46-4a15-ad02-d0d0be604fc1",
+                        "6e3429a6-f593-45dc-8a93-1c9c3c4f32da", TRANSACTIONLIST);
+        BankAccount feeAccount = new BankAccount(999, new BigDecimal("0.00"), "32642962-9b0c-4655-95b7-d0d0be604fc1",
+                "6e3429a6-f593-465d-92c5-92c5", null);
+        
+        when(userService.getByEmail(transactionDto.getConnection())).thenReturn(Optional.of(USER2));
+        when(bankAccountRepository.save(USER2.getBankAccount())).thenReturn(updatedCreditAccount);
+        when(bankAccountRepository.findById(999)).thenReturn(Optional.of(feeAccount));
+        feeAccount.setBalance(new BigDecimal("2.5"));
+        when(bankAccountRepository.save(feeAccount)).thenReturn(feeAccount);
+        when(userService.getTheAuthenticatedUser()).thenReturn(USER);
+        BANKACCOUNT.setBalance(new BigDecimal("1497.5"));
+        when(bankAccountRepository.save(BANKACCOUNT)).thenReturn(BANKACCOUNT);
+        when(userService.getTheAuthenticatedUser()).thenReturn(USER);
+        when(bankAccountRepository.save(USER.getBankAccount())).thenReturn(updatedDebitAccount);
+        
+        bankAccountService.transaction(transactionDto);
+        
+        verify(bankAccountRepository, Mockito.times(4)).save(any(BankAccount.class));
+        verify(bankAccountRepository, Mockito.times(1)).findById(999);
     }
 }

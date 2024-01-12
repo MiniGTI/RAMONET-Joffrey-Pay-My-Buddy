@@ -6,7 +6,7 @@ import com.paymybuddy.model.Transaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.TransactionService;
 import com.paymybuddy.service.UserService;
-import com.paymybuddy.util.InputChecker;
+import com.paymybuddy.service.validatorService.InputChecker;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

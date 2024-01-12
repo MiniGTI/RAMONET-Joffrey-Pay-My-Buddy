@@ -4,11 +4,13 @@ com/paymybuddy/controller/LoginControllerTest.class
 com/paymybuddy/unitaryUtilTest/InputCheckerTest.class
 com/paymybuddy/unitaryServiceTest/UserServiceTest.class
 com/paymybuddy/controller/RegisterControllerTest.class
+com/paymybuddy/integrationRepositoryTest/TransactionRepositoryTest.class
 com/paymybuddy/controller/ProfileControllerTest.class
+com/paymybuddy/integrationRepositoryTest/BankAccountRepositoryTest.class
 com/paymybuddy/RamonetJoffreyPayMyBuddyApplicationTests.class
 com/paymybuddy/controller/AddBuddyControllerTest.class
 com/paymybuddy/unitaryConfigurationTest/UserDetailsServiceTest.class
-com/paymybuddy/integrationTest/AddBuddyTest.class
+com/paymybuddy/integrationRepositoryTest/UserRepositoryTest.class
 com/paymybuddy/controller/ContactControllerTest.class
 com/paymybuddy/controller/TransferControllerTest.class
 com/paymybuddy/controller/RegisterSuccessControllerTest.class

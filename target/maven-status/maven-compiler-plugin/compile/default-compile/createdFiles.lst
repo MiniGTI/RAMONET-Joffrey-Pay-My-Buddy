@@ -1,5 +1,4 @@
 com/paymybuddy/RamonetJoffreyPayMyBuddyApplication.class
-com/paymybuddy/util/InputChecker.class
 com/paymybuddy/controller/RegisterSuccessController.class
 com/paymybuddy/repository/UserRepository.class
 com/paymybuddy/dto/TransactionDto.class
@@ -23,5 +22,6 @@ com/paymybuddy/controller/LoginController.class
 com/paymybuddy/controller/ProfileController.class
 com/paymybuddy/controller/RegisterController.class
 com/paymybuddy/dto/BankAccountDto.class
+com/paymybuddy/service/validatorService/InputChecker.class
 com/paymybuddy/service/TransactionService.class
 com/paymybuddy/dto/PasswordDto.class

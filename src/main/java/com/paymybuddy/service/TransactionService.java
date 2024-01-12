@@ -5,6 +5,8 @@ import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.Transaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,11 @@ import java.util.Optional;
  */
 @Service
 public class TransactionService {
+    
+    /**
+     * Call of SLF4J.
+     */
+    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
     
     /**
      * Call the TransactionRepository to perform CRUDs request to the database.
@@ -69,7 +76,8 @@ public class TransactionService {
         
         BankAccount bankAccount = userService.getTheAuthenticatedUser()
                 .getBankAccount();
-        
+        logger.debug("transactionDto bankAccount" + transactionDto.getBankAccount());
+        logger.debug("bankAccount id: " + bankAccount.getId());
         Transaction transaction = new Transaction(transactionDto.getDescription(), transactionDto.getConnection(),
                 transactionDto.getAmount(), bankAccount);
         return transactionsRepository.save(transaction);

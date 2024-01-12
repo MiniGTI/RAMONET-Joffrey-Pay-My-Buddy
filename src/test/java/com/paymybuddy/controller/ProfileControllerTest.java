@@ -7,7 +7,7 @@ import com.paymybuddy.model.Transaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.TransactionService;
 import com.paymybuddy.service.UserService;
-import com.paymybuddy.util.InputChecker;
+import com.paymybuddy.service.validatorService.InputChecker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

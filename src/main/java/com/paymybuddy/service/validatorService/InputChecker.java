@@ -1,9 +1,11 @@
-package com.paymybuddy.util;
+package com.paymybuddy.service.validatorService;
 
 import com.paymybuddy.dto.BuddyDto;
 import com.paymybuddy.dto.PasswordDto;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,12 @@ import java.util.List;
  */
 @Service
 public class InputChecker {
+    
+    /**
+     * Call of SLF4J.
+     */
+    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
+    
     /**
      * Call the UserService to get data from User objects.
      */
@@ -45,6 +53,7 @@ public class InputChecker {
      * @return true if the two String are equals and false if aren't.
      */
     public Boolean sameInputCheck(String firstInput, String secondInput) {
+        logger.debug("First input: " + firstInput + " second input: " + secondInput);
         return firstInput.equals(secondInput);
     }
     
@@ -56,6 +65,7 @@ public class InputChecker {
      * @return true if the Principal User's email is equals to the buddyDto, and false if isn't.
      */
     public Boolean sameEmailCheck(BuddyDto buddyDto) {
+        logger.debug("buddyDto email: " + buddyDto.getEmail());
         return buddyDto.getEmail()
                 .equals(userService.getTheAuthenticatedUser()
                         .getEmail());
@@ -68,7 +78,7 @@ public class InputChecker {
      * @return true if the User exist, and false if isn't.
      */
     public Boolean buddyEmailExistCheck(BuddyDto buddyDto) {
-        
+        logger.debug("buddyDto email: " + buddyDto.getEmail());
         return userService.getByEmail(buddyDto.getEmail())
                 .isPresent();
     }
@@ -86,6 +96,9 @@ public class InputChecker {
         String oldPassword = userService.getTheAuthenticatedUser()
                 .getPassword();
         
+        logger.debug("passwordDto: new password: " + passwordDto.getNewPassword() + " password check input: " +
+                passwordDto.getNewPasswordCheck());
+        
         return sameInputCheck(passwordDto.getNewPassword(), passwordDto.getNewPasswordCheck()) &&
                 passwordEncoder.matches(passwordDto.getOldPassword(), oldPassword);
     }
@@ -102,7 +115,7 @@ public class InputChecker {
         User buddy = userService.getUserByBuddyDto(buddyDto);
         
         List<User> buddys = authenticatedUser.getBuddys();
-        
+        logger.debug("BuddyDto email: " + buddyDto.getEmail() + buddys.toString());
         return buddys.contains(buddy);
     }
 }
