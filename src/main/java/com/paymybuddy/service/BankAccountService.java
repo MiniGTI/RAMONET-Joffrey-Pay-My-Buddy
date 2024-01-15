@@ -207,12 +207,12 @@ public class BankAccountService {
      * Method to collect the fee.
      * First add the fee to the feeAccount.
      * And subtract the fee amount to the principal bankAccount.
-     * The feeAccount has id = 999.
+     * The feeAccount has id = 1.
      *
      * @param amount the BigDecimal of the fee to collect.
      */
     private void feeCollect(BigDecimal amount) {
-        Optional<BankAccount> optFeeAccount = bankAccountRepository.findById(999);
+        Optional<BankAccount> optFeeAccount = bankAccountRepository.findById(1);
         if(optFeeAccount.isPresent()) {
             BankAccount feeAccount = optFeeAccount.get();
             logger.debug("feeAccount balance before: " + feeAccount.getBalance());
