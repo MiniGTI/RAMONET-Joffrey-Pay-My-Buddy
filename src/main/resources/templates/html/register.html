@@ -23,6 +23,9 @@
     <div th:if="${param.errorEmailAlreadyExist}" class="alert alert-danger ">
         <p class="text-danger my-auto">This email is already register.</p>
     </div>
+    <div th:if="${param.errorOauth}" class="alert alert-danger ">
+        <p class="text-danger my-auto">We need to register first.</p>
+    </div>
     <form th:action="@{/register}" th:object="${userDto}" method="post" role="form">
         <div class="inner-addon">
             <i class="bi bi-envelope"></i>

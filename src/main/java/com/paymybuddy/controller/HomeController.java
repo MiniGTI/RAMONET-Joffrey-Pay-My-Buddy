@@ -28,7 +28,6 @@ import java.math.BigDecimal;
 @Controller
 @RequestMapping("/")
 public class HomeController {
-    
     /**
      * Call the BankAccountService to get data from BankAccount objects.
      */
@@ -79,7 +78,6 @@ public class HomeController {
      */
     @GetMapping
     public String accountField(Model model) {
-        
         User authenticatedUser = userService.getTheAuthenticatedUser();
         
         String iban = authenticatedUser.getBankAccount()
