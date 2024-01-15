@@ -1,0 +1,60 @@
+
+.container {
+    margin-top: 3em;
+    padding: 2em;
+    border-radius: 10px;
+    border: solid 2px #afafaf;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 3em;
+}
+
+h2 {
+    background-image: linear-gradient(to left, #9ab82e, #2eb82e);
+    font-size: 1.3em;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px 30px;
+}
+
+h3 {
+
+}
+
+.inner-addon {
+    position: relative;
+}
+
+
+.inner-addon .bi {
+    position: absolute;
+    padding: 8px;
+}
+
+.email .bi {
+    left: 0px;
+}
+
+.password .bi {
+    right: 0px;
+}
+
+.inner-addon input {
+    padding-left: 40px;
+    margin-bottom: 2em;
+    border: solid 2px rgba(158, 158, 158, 0.5);
+}
+.checkbox{
+    text-align: center;
+}
+.btn-form{
+    text-align: center;
+}
+
+.btn{
+    width: 9em;
+}

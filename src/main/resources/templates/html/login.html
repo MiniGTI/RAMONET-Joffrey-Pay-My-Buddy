@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/css/login.css" type="text/css" th:href="@{/css/login.css}"/>
+</head>
+
+<body>
+<div class="container col-md-3 col-xs-5 col-sm-3">
+    <div class="title">
+        <h2>Pay My Buddy</h2>
+    </div>
+    <div th:if="${param.delete}" class="alert alert-danger ">
+        <p class="text-danger my-auto">Your account have been deleted successfully.</p>
+    </div>
+    <div th:if="${param.error}" class="alert alert-danger ">
+        <p class="text-danger my-auto">Invalid username or/and password.</p>
+    </div>
+    <div th:if="${param.logout}" class="alert alert-warning">
+        <p class="text-dark my-auto">Your have been logged out.</p>
+    </div>
+    <div th:if="${param.success}" class="alert alert-success">
+        <p class="text-success my-auto">Your have signed up successfully. <br/>
+        Please sign in.</p>
+    </div>
+    <form th:action="@{/login}" method="post" role="form">
+        <div class="inner-addon">
+            <i class="bi bi-envelope"></i>
+            <input type="text" class="form-control" name="email" placeholder="Email" required/>
+            <i class="bi bi-asterisk"></i>
+            <input type="password" class="form-control" name="password" placeholder="Password" required/>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="remember-me"> Remember me
+                </label>
+            </div>
+        </div>
+        <div class="btn-form">
+            <input class="btn btn-primary btn-lg" type="submit" value="Sign In">
+        </div>
+        <div class="btn-form py-1">
+            <a class="btn btn-info" th:href="@{/register}">Register</a>
+        </div>
+    </form>
+    <div class="btn-form py-1">
+        <a class="btn btn-info" th:href="@{/oauth2/authorization/github}">Login with GitHub</a>
+    </div>
+</div>
+</body>
+</html>
