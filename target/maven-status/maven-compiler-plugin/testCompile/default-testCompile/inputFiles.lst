@@ -1,0 +1,17 @@
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/controller/AddBuddyControllerTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/integrationRepositoryTest/TransactionRepositoryTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/unitaryServiceTest/UserServiceTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/controller/ContactControllerTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/integrationRepositoryTest/UserRepositoryTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/RamonetJoffreyPayMyBuddyApplicationTests.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/controller/HomeControllerTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/unitaryServiceTest/TransactionServiceTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/controller/LoginControllerTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/controller/ProfileControllerTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/unitaryUtilTest/InputCheckerTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/controller/RegisterSuccessControllerTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/unitaryServiceTest/BankAccountServiceTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/controller/RegisterControllerTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/integrationRepositoryTest/BankAccountRepositoryTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/unitaryConfigurationTest/UserDetailsServiceTest.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/test/java/com/paymybuddy/controller/TransferControllerTest.java
