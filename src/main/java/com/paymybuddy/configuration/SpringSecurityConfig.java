@@ -60,10 +60,6 @@ public class SpringSecurityConfig{
                     form.failureUrl("/login?error");
                     form.permitAll();
                 })
-                .oauth2Login(ao -> {
-                    ao.loginPage("/login");
-                    ao.failureUrl("/register?errorOauth");
-                })
                 .rememberMe(remember -> {
                     remember.rememberMeParameter("remember-me");
                     remember.key("its-me-key");

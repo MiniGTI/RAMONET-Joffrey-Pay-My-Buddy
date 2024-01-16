@@ -1,9 +1,7 @@
 package com.paymybuddy.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,18 +24,25 @@ import java.util.List;
  * buddy_id is the id of the user register like buddy.
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(length = 40)
     private String email;
+    @Column(length = 61)
     private String password;
+    @Column(length = 50)
     private String firstname;
+    @Column(length = 50)
     private String lastname;
+    @Column(length = 5)
     private String role;
     @OneToOne(
             cascade = CascadeType.ALL,
@@ -47,7 +52,7 @@ public class User {
     
     @ManyToMany(
             cascade = CascadeType.MERGE,
-            fetch = FetchType.EAGER)
+               fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_buddys",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -62,7 +67,6 @@ public class User {
             joinColumns = @JoinColumn(name = "buddys_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> buddysOf = new ArrayList<>();
-    
     public User(String email, String password, String firstname, String lastname, String role,
                 BankAccount bankAccount) {
         this.bankAccount = bankAccount;
@@ -95,4 +99,5 @@ public class User {
         user.getBuddys()
                 .remove(this);
     }
+
 }

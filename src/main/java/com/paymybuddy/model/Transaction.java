@@ -1,9 +1,7 @@
 package com.paymybuddy.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,12 +29,13 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "transaction_number")
+    @Column(name = "transaction_number", length = 36)
     private String transactionNumber;
+    @Column(length = 40)
     private String connection;
+    @Column(length = 7)
     private BigDecimal amount;
     private String description;
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
     @ManyToOne(
             cascade = CascadeType.ALL)
