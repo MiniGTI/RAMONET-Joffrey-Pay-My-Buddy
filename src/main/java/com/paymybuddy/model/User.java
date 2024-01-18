@@ -34,20 +34,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(length = 40)
+    @Column(length = 40, nullable = false)
     private String email;
-    @Column(length = 61)
+    @Column(length = 61, nullable = false)
     private String password;
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String firstname;
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String lastname;
-    @Column(length = 5)
+    @Column(length = 5, nullable = false)
     private String role;
     @OneToOne(
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    @JoinColumn(name = "bank_account_id")
+    @JoinColumn(name = "bank_account_id", nullable = false)
     private BankAccount bankAccount;
     
     @ManyToMany(

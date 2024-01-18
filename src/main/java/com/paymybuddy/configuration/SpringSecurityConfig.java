@@ -59,7 +59,7 @@ public class SpringSecurityConfig{
                     form.passwordParameter("password");
                     form.failureUrl("/login?error");
                     form.permitAll();
-                })
+                 })
                 .rememberMe(remember -> {
                     remember.rememberMeParameter("remember-me");
                     remember.key("its-me-key");

@@ -9,6 +9,7 @@
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/controller/ProfileController.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/repository/BankAccountRepository.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/configuration/SpringSecurityConfig.java
+/home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/configuration/Data.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/service/UserService.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/controller/ContactController.java
 /home/jo/IdeaProjects/RAMONET-Joffrey-Pay-My-Buddy/src/main/java/com/paymybuddy/service/TransactionService.java

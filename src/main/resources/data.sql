@@ -1,1 +1,0 @@
-INSERT INTO bank_account (id, balance, iban, swift) VALUES ('1', '0.00', '59byw4ed-6d48-4n94-zv98-d1d0bk604fg5', '6k6571a6-p208-45ht-8a93-1c1c7j4k31qm');

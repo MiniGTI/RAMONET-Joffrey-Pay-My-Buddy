@@ -15,6 +15,7 @@ com/paymybuddy/repository/TransactionRepository.class
 com/paymybuddy/service/UserService.class
 com/paymybuddy/model/User.class
 com/paymybuddy/controller/ContactController.class
+com/paymybuddy/configuration/Data.class
 com/paymybuddy/dto/UserDto.class
 com/paymybuddy/repository/BankAccountRepository.class
 com/paymybuddy/dto/BuddyDto.class

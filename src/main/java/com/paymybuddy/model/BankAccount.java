@@ -26,11 +26,11 @@ public class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(length = 7)
+    @Column(length = 7, nullable = false)
     private BigDecimal balance;
-    @Column(length = 36)
+    @Column(length = 36, nullable = false)
     private String iban;
-    @Column(length = 36)
+    @Column(length = 36, nullable = false)
     private String swift;
     
     @OneToMany(
