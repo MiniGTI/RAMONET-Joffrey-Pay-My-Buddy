@@ -165,12 +165,12 @@ public class BankAccountServiceTest {
         BankAccount updatedDebitAccount =
                 new BankAccount(1, new BigDecimal("1447.50"), "67acb3ed-6d46-4a15-ad02-d0d0be604fc1",
                         "6e3429a6-f593-45dc-8a93-1c9c3c4f32da", TRANSACTIONLIST);
-        BankAccount feeAccount = new BankAccount(3, new BigDecimal("0.00"), "32642962-9b0c-4655-95b7-d0d0be604fc1",
+        BankAccount feeAccount = new BankAccount(1, new BigDecimal("0.00"), "32642962-9b0c-4655-95b7-d0d0be604fc1",
                 "6e3429a6-f593-465d-92c5-92c5", null);
         
         when(userService.getByEmail(transactionDto.getConnection())).thenReturn(Optional.of(USER2));
         when(bankAccountRepository.save(USER2.getBankAccount())).thenReturn(updatedCreditAccount);
-        when(bankAccountRepository.findById(3)).thenReturn(Optional.of(feeAccount));
+        when(bankAccountRepository.findById(1)).thenReturn(Optional.of(feeAccount));
         feeAccount.setBalance(new BigDecimal("2.5"));
         when(bankAccountRepository.save(feeAccount)).thenReturn(feeAccount);
         when(userService.getTheAuthenticatedUser()).thenReturn(USER);
@@ -182,6 +182,6 @@ public class BankAccountServiceTest {
         bankAccountService.transaction(transactionDto);
         
         verify(bankAccountRepository, Mockito.times(4)).save(any(BankAccount.class));
-        verify(bankAccountRepository, Mockito.times(1)).findById(3);
+        verify(bankAccountRepository, Mockito.times(1)).findById(1);
     }
 }
