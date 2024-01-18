@@ -192,13 +192,13 @@ public class BankAccountService {
     
     /**
      * Method to subtract five per cent of the transaction.
-     * Get the amount of the transaction, and multiply him per 0.05.
+     * Get the amount of the transaction, and multiply him per 0.005.
      *
      * @param amount the BigDecimal of the transaction.
      * @return the BigDecimal of the fee valor.
      */
     private BigDecimal feeCalculator(BigDecimal amount) {
-        BigDecimal fee = new BigDecimal("0.05");
+        BigDecimal fee = new BigDecimal("0.005");
         logger.debug("Amount parsed: " + amount);
         return amount.multiply(fee);
     }
