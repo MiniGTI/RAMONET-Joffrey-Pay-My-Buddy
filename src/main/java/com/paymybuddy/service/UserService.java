@@ -117,7 +117,7 @@ public class UserService {
     }
     
     /**
-     * Method to update the principal's firstname, lastname or/and email with the UserModifyDto object parsed from the profileModify form in the profile.html.
+     * Method to update the principal's firstname or/and lastname with the UserModifyDto object parsed from the profileModify form in the profile.html.
      * Call updateAuthenticatesEmail method to update the Authentication token.
      *
      * @param userModifyDto the object with the data from the form.
@@ -135,12 +135,8 @@ public class UserService {
                 .isEmpty()) {
             user.setLastname(userModifyDto.getLastname());
         }
-        if(!userModifyDto.getEmail()
-                .isEmpty()) {
-            user.setEmail(userModifyDto.getEmail());
-        }
-        logger.debug("userModifyDto: " + userModifyDto.getFirstName() + " - " + userModifyDto.getLastname() + " - " +
-                userModifyDto.getEmail());
+
+        logger.debug("userModifyDto: " + userModifyDto.getFirstName() + " - " + userModifyDto.getLastname());
         return userRepository.save(user);
     }
     

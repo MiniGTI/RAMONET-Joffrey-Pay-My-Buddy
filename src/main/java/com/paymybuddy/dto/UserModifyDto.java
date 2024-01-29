@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Object to get the data input from the profileModify form.
- * Used to parse data to update the Principal User's firstname, lastname and/or email attribute.
+ * Used to parse data to update the Principal User's firstname and/or lastname attribute.
  */
 @Data
 @AllArgsConstructor
@@ -15,6 +15,5 @@ public class UserModifyDto {
 
 private String firstName;
 private String lastname;
-private String email;
 
 }
