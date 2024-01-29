@@ -81,9 +81,9 @@ public class ProfileControllerTest {
             password = "test",
             roles = "USER")
     void shouldModifyProfileTest(){
-        UserModifyDto userModifyDto = new UserModifyDto("newFirstname", "newLastname", "newEmail");
+        UserModifyDto userModifyDto = new UserModifyDto("newFirstname", "newLastname");
         User updatedUser =
-                new User(1, "newEmail", "test", "newFirstname", "newLastname", "USER", new BankAccount());
+                new User(1, "Email", "test", "newFirstname", "newLastname", "USER", new BankAccount());
         
         when(userService.getTheAuthenticatedUser()).thenReturn(USER);
         when(userService.save(userModifyDto)).thenReturn(updatedUser);

@@ -100,7 +100,7 @@ public class UserServiceTest {
             password = "test",
             roles = "USER")
     void shouldSaveWithUserModifyWhenOnlyFirstnameUpdatedTest() {
-        UserModifyDto userModifyDto = new UserModifyDto("newFirstname", "", "");
+        UserModifyDto userModifyDto = new UserModifyDto("newFirstname", "");
         User updatedUser =
                 new User(1, "usertest@email.com", password, "newFirstname", "lastnameTest", "USER", new BankAccount());
         
@@ -118,7 +118,7 @@ public class UserServiceTest {
             password = "test",
             roles = "USER")
     void shouldSaveWithUserModifyWhenOnlyLastnameUpdatedTest() {
-        UserModifyDto userModifyDto = new UserModifyDto("", "newLastname", "");
+        UserModifyDto userModifyDto = new UserModifyDto("", "newLastname");
         User updatedUser =
                 new User(1, "usertest@email.com", password, "firstnameTest", "newLastname", "USER", new BankAccount());
         
@@ -128,33 +128,16 @@ public class UserServiceTest {
         User result = userService.save(userModifyDto);
         Assertions.assertEquals(updatedUser, result);
     }
-    
-    @Test
-    @WithMockUser(
-            username = "usertest@email.com",
-            password = "test",
-            roles = "USER")
-    void shouldSaveWithUserModifyWhenOnlyEmailUpdatedTest() {
-        UserModifyDto userModifyDto = new UserModifyDto("", "", "newtest@test.com");
-        User updatedUser =
-                new User(1, "newtest@test.com", password, "firstnameTest", "lastnameName", "USER", new BankAccount());
-        
-        when(userService.getByEmail("usertest@email.com")).thenReturn(Optional.of(USER));
-        when(userRepository.save(any(User.class))).thenReturn(updatedUser);
-        
-        User result = userService.save(userModifyDto);
-        Assertions.assertEquals(updatedUser, result);
-    }
-    
+
     @Test
     @WithMockUser(
             username = "usertest@email.com",
             password = "test",
             roles = "USER")
     void shouldSaveWithUserModifyWhenAllAreUpdatedTest() {
-        UserModifyDto userModifyDto = new UserModifyDto("newLastname", "newLastname", "newtest@test.com");
+        UserModifyDto userModifyDto = new UserModifyDto("newLastname", "newLastname");
         User updatedUser =
-                new User(1, "newtest@test.com", password, "newFirstname", "newLastname", "USER", new BankAccount());
+                new User(1, "test@test.com", password, "newFirstname", "newLastname", "USER", new BankAccount());
         
         when(userService.getByEmail("usertest@email.com")).thenReturn(Optional.of(USER));
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
